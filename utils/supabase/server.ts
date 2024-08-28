@@ -14,8 +14,8 @@ export const createClient = () => {
         },
         setAll(cookiesToSet) {
           try {
-            cookiesToSet.forEach(({ name, value, options }) => {
-              cookieStore.set(name, value, options);
+            cookiesToSet.forEach(({ title, tagline, video_url }) => {
+              cookieStore.set(title, tagline, video_url);
             });
           } catch (error) {
             // The `set` method was called from a Server Component.
@@ -24,6 +24,6 @@ export const createClient = () => {
           }
         },
       },
-    },
+    }
   );
 };
