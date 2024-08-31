@@ -1,3 +1,6 @@
+import dayjs, { Dayjs } from "dayjs";
+import { ReactNode } from "react";
+
 export interface VideoType {
   id: string;
   title: string;
@@ -8,7 +11,9 @@ export interface VideoType {
 }
 
 export interface CommentType {
+  username: ReactNode;
   id: string;
   video_id: string;
   content: string;
+  created_at: Dayjs;
 }

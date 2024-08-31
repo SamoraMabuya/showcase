@@ -3,6 +3,11 @@ import { CommentType } from "./type";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+import { Collapsible } from "@/components/Collapsible";
+import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
+dayjs.extend(relativeTime);
 
 // types.ts
 
@@ -15,6 +20,7 @@ export default function CommentSection({ videoId }: CommentSectionProps) {
   const [newComment, setNewComment] = useState<string>(""); // Type for new comment
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
+  const [isOpen, setIsOpen] = useState(false);
 
   // Fetch comments when the component mounts or when videoId changes
   useEffect(() => {
@@ -81,17 +87,36 @@ export default function CommentSection({ videoId }: CommentSectionProps) {
       </div>
 
       {/* Comments List */}
-      {comments.length > 0 ? (
-        <ul className="list-none space-y-2">
-          {comments.map((comment, index) => (
-            <li key={index} className="border p-2 rounded-md">
-              {comment.content}
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>No comments yet.</p>
-      )}
+      <Collapsible
+        open={isOpen}
+        onOpenChange={setIsOpen}
+        className="w-[350px] space-y-2"
+      >
+        <CollapsibleTrigger asChild>
+          <Button variant="ghost" size="sm">
+            <CaretSortIcon className="h-4 w-4" />
+            <span className="sr-only"> See comments </span>
+          </Button>
+        </CollapsibleTrigger>
+
+        {comments.length > 0 ? (
+          <ul className="list-none space-y-2 ">
+            {comments.map((comment, index) => (
+              <li key={index} className=" p-2 rounded-md">
+                <div className="flex align-middle gap-x-5">
+                  <h3>
+                    <strong>{comment.username}</strong>
+                  </h3>
+                  <span>{dayjs(comment.created_at).fromNow()}</span>
+                </div>
+                <p>{comment.content}</p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No comments yet.</p>
+        )}
+      </Collapsible>
     </div>
   );
 }
