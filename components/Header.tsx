@@ -34,9 +34,9 @@ export function SearchBoxWithText() {
     <div className="gap-0.5 md:min-w-[42%]">
       <Textarea placeholder="Type your message here." id="message-2" />
       <div className="flex flex-row justify-between">
-        <p className="text-sm text-muted-foreground mt-2">
+        <small className="text-sm text-muted-foreground mt-2">
           What app are looking for?
-        </p>
+        </small>
         <FilterSearch />
       </div>
     </div>

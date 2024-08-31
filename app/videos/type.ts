@@ -8,6 +8,7 @@ export interface VideoType {
   video_url: string;
   thumbnail_url: string;
   user_id: string;
+  description: string;
 }
 
 export interface CommentType {
@@ -16,4 +17,8 @@ export interface CommentType {
   video_id: string;
   content: string;
   created_at: Dayjs;
+}
+
+export interface Suggested {
+  currentVideoId: string;
 }

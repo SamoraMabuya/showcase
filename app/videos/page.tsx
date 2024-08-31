@@ -8,11 +8,13 @@ import { VideoType } from "./type"; // Use the renamed type
 import Likes from "./Likes";
 import CoinsAwarded from "./CoinsAwarded";
 import { Label } from "@/components/Label";
+import { Button } from "@/components/Button";
 
 export default function VideoPage() {
   const [video, setVideo] = useState<VideoType | null>(null); // Use VideoType for type definition
   const [loading, setLoading] = useState(true);
-  const [uploader, setUploader] = useState<string | null>(null); // State to store the uploader's username
+  const [uploader, setUploader] = useState<string | null>(null);
+  const [expandText, setExpandText] = useState(false);
 
   // Fetch the selected video (hardcoded for now as an example)
   useEffect(() => {
@@ -50,6 +52,13 @@ export default function VideoPage() {
     return <p>No video found</p>;
   }
 
+  const handleExpandText = () => setExpandText(!expandText);
+
+  const truncateText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + "...";
+  };
+
   return (
     <div className="container mx-auto p-4">
       {/* Selected Video */}
@@ -78,6 +87,21 @@ export default function VideoPage() {
             </div>
           </div>
         </div>
+        <p className="mt-4">
+          {expandText
+            ? video.description
+            : truncateText(video.description, 150)}
+
+          {video.description}
+        </p>
+        {video.description.length > 150 && (
+          <Button
+            onClick={handleExpandText}
+            className="mt-2 hover:text-blue-700"
+          >
+            {expandText ? "Less" : "More"}
+          </Button>
+        )}
       </div>
 
       {/* Comment Section */}

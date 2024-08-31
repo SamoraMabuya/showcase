@@ -10,11 +10,10 @@ interface CoinsAwardedProps {
 }
 
 export default function CoinsAwarded({ videoId, userId }: CoinsAwardedProps) {
-  const [coins, setCoins] = useState<number>(0); // Total coins awarded to this video
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error state
+  const [coins, setCoins] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Fetch total coins awarded for this video
   useEffect(() => {
     const fetchTotalCoins = async () => {
       const { data, error } = await createClient()
@@ -30,7 +29,7 @@ export default function CoinsAwarded({ videoId, userId }: CoinsAwardedProps) {
           (sum: number, award: { total_coins: number }) =>
             sum + award.total_coins,
           0
-        ); // Sum the coins awarded
+        );
         setCoins(total);
       }
       setLoading(false);

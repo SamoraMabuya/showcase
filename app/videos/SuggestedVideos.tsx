@@ -1,16 +1,10 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/Card";
-import { VideoType } from "./type";
 import { createClient } from "@/utils/supabase/client";
+import { Suggested, VideoType } from "./type";
 
-interface SuggestedVideosProps {
-  currentVideoId: string; // Accept the current video ID as a prop
-}
-
-export default function SuggestedVideos({
-  currentVideoId,
-}: SuggestedVideosProps) {
+export default function SuggestedVideos({ currentVideoId }: Suggested) {
   const [suggestedVideos, setSuggestedVideos] = useState<VideoType[]>([]); // Use type annotations for state
   const [loading, setLoading] = useState(true); // Add loading state
   const [error, setError] = useState<string | null>(null); // Add error state
@@ -25,8 +19,7 @@ export default function SuggestedVideos({
         .limit(5); // Limit to 5 suggestions
 
       if (error) {
-        setError("Failed to load suggested videos"); // Handle errors
-        console.error("Error fetching suggested videos:", error.message);
+        setError("Failed to load suggested videos");
       } else {
         setSuggestedVideos(data || []); // Update state with fetched data
       }
@@ -49,12 +42,12 @@ export default function SuggestedVideos({
   }
 
   return (
-    <div className="mt-8">
-      <h3 className="text-lg font-semibold mb-4">Suggested Videos</h3>
+    <div className="mt-10">
       <div className="grid gap-4">
         {suggestedVideos.map((video) => (
           <Link href={`/video/${video.id}`} key={video.id}>
             <Card className="p-4">
+              <video src={video.video_url} poster={video.thumbnail_url} />
               <h4 className="font-bold">{video.title}</h4>
               <p className="text-sm text-muted-foreground">{video.tagline}</p>
             </Card>
