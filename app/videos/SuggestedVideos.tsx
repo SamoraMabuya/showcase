@@ -45,12 +45,19 @@ export default function SuggestedVideos({ currentVideoId }: Suggested) {
     <div className="mt-10">
       <div className="grid gap-4">
         {suggestedVideos.map((video) => (
-          <Link href={`/video/${video.id}`} key={video.id}>
-            <Card className="p-4">
-              <video src={video.video_url} poster={video.thumbnail_url} />
-              <h4 className="font-bold">{video.title}</h4>
-              <p className="text-sm text-muted-foreground">{video.tagline}</p>
-            </Card>
+          <Link
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            href={`/video/${video.id}`}
+            key={video.id}
+          >
+            <video
+              width={300}
+              height={300}
+              src={video.video_url}
+              poster={video.thumbnail_url}
+            />
+            <h4 className="font-bold">{video.title}</h4>
+            <p className="text-sm text-muted-foreground">{video.tagline}</p>
           </Link>
         ))}
       </div>
