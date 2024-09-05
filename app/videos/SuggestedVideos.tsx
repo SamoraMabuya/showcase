@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Card } from "@/components/Card";
 import { createClient } from "@/utils/supabase/client";
 import { Suggested, VideoType } from "./type";
+import Coins from "@/components/Coins";
 
 export default function SuggestedVideos({ currentVideoId }: Suggested) {
   const [suggestedVideos, setSuggestedVideos] = useState<VideoType[]>([]); // Use type annotations for state
@@ -46,7 +47,7 @@ export default function SuggestedVideos({ currentVideoId }: Suggested) {
       <div className="grid gap-4">
         {suggestedVideos.map((video) => (
           <Link
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto"
             href={`/video/${video.id}`}
             key={video.id}
           >
@@ -58,6 +59,7 @@ export default function SuggestedVideos({ currentVideoId }: Suggested) {
             />
             <h4 className="font-bold">{video.title}</h4>
             <p className="text-sm text-muted-foreground">{video.tagline}</p>
+            <Coins coins={video.total_coins} />
           </Link>
         ))}
       </div>

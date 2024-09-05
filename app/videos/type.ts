@@ -9,6 +9,7 @@ export interface VideoType {
   thumbnail_url: string;
   user_id: string;
   description: string;
+  total_coins: number;
 }
 
 export interface CommentType {
