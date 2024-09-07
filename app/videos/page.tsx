@@ -9,6 +9,7 @@ import Likes from "./Likes";
 import CoinsAwarded from "./CoinsAwarded";
 import { Label } from "@/components/Label";
 import { Button } from "@/components/Button";
+import { shortenText } from "@/lib/text";
 
 export default function VideoPage() {
   const [video, setVideo] = useState<VideoType | null>(null); // Use VideoType for type definition
@@ -53,11 +54,7 @@ export default function VideoPage() {
   }
 
   const handleExpandText = () => setExpandText(!expandText);
-
-  const truncateText = (text: string, maxLength: number) => {
-    if (text.length <= maxLength) return text;
-    return text.slice(0, maxLength) + "...";
-  };
+  const maxLengthOfText = 200;
 
   return (
     <div className="container mx-auto p-4">
@@ -87,23 +84,24 @@ export default function VideoPage() {
             </div>
           </div>
         </div>
-        <p className="mt-4">
-          {expandText
-            ? video.description
-            : truncateText(video.description, 150)}
-
-          {video.description}
-        </p>
-        {video.description.length > 150 && (
-          <Button
-            onClick={handleExpandText}
-            className="mt-2 hover:text-blue-700"
-          >
-            {expandText ? "Less" : "More"}
-          </Button>
-        )}
+        <div className="mt-4">
+          <p>
+            {" "}
+            {expandText
+              ? video.description
+              : shortenText(video.description, maxLengthOfText)}
+          </p>
+          {video.description.length > maxLengthOfText && (
+            <Button
+              variant={"outline"}
+              onClick={handleExpandText}
+              className="mt-2 hover:text-blue-700"
+            >
+              {expandText ? "Less" : "More"}
+            </Button>
+          )}
+        </div>
       </div>
-
       {/* Comment Section */}
       <CommentSection videoId={video.id} />
 
