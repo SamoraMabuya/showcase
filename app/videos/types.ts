@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from "dayjs";
 import { ReactNode } from "react";
 
-export interface VideoType {
+export interface Videos {
   id: string;
   title: string;
   tagline: string;
@@ -10,9 +10,10 @@ export interface VideoType {
   user_id: string;
   description: string;
   total_coins: number;
+  like_count: number;
 }
 
-export interface CommentType {
+export interface Comments {
   username: ReactNode;
   id: string;
   video_id: string;

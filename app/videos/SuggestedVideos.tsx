@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card } from "@/components/Card";
 import { createClient } from "@/utils/supabase/client";
-import { Suggested, VideoType } from "./type";
+import { Suggested, Videos } from "./types";
 import Coins from "@/components/Coins";
 
 export default function SuggestedVideos({ currentVideoId }: Suggested) {
-  const [suggestedVideos, setSuggestedVideos] = useState<VideoType[]>([]); // Use type annotations for state
+  const [suggestedVideos, setSuggestedVideos] = useState<Videos[]>([]); // Use type annotations for state
   const [loading, setLoading] = useState(true); // Add loading state
   const [error, setError] = useState<string | null>(null); // Add error state
 

@@ -4,7 +4,7 @@ import CommentSection from "./CommentSection";
 import SuggestedVideos from "./SuggestedVideos";
 import { Card } from "@/components/Card";
 import { createClient } from "@/utils/supabase/client";
-import { VideoType } from "./type"; // Use the renamed type
+import { Videos } from "./types"; // Use the renamed type
 import Likes from "./Likes";
 import CoinsAwarded from "./CoinsAwarded";
 import { Label } from "@/components/Label";
@@ -12,7 +12,7 @@ import { Button } from "@/components/Button";
 import { shortenText } from "@/lib/text";
 
 export default function VideoPage() {
-  const [video, setVideo] = useState<VideoType | null>(null); // Use VideoType for type definition
+  const [video, setVideo] = useState<Videos | null>(null); // Use VideoType for type definition
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState<string | null>(null);
   const [expandText, setExpandText] = useState(false);
@@ -36,7 +36,7 @@ export default function VideoPage() {
       if (error) {
         console.error("Error fetching video:", error.message);
       } else {
-        setVideo(data as VideoType);
+        setVideo(data as Videos);
         setUploader(data.users.username);
       }
       setLoading(false);

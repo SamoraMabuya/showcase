@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { CommentType } from "./type";
+import { Comments } from "./types";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
@@ -16,7 +16,7 @@ interface CommentSectionProps {
 }
 
 export default function CommentSection({ videoId }: CommentSectionProps) {
-  const [comments, setComments] = useState<CommentType[]>([]); // Define the type for comments
+  const [comments, setComments] = useState<Comments[]>([]); // Define the type for comments
   const [newComment, setNewComment] = useState<string>(""); // Type for new comment
   const [loading, setLoading] = useState<boolean>(true); // Loading state
   const [error, setError] = useState<string | null>(null); // Error state
