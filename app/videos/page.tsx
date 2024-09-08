@@ -66,8 +66,7 @@ export default function VideoPage() {
             Your browser does not support the video tag.
           </video>
         </div>
-        {/* Video Meta Data */}
-        <div className="px-4 flex justify-between">
+        <div className="px-4 flex justify-between mt-8">
           <div>
             <h2 className="text-lg font-bold">{video.title}</h2>
             <p className="text-sm text-muted-foreground mb-2">
@@ -102,10 +101,7 @@ export default function VideoPage() {
           )}
         </div>
       </div>
-      {/* Comment Section */}
       <CommentSection videoId={video.id} />
-
-      {/* Suggested Videos */}
       <SuggestedVideos currentVideoId={video.id} />
     </div>
   );

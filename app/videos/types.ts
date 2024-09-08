@@ -11,6 +11,7 @@ export interface Videos {
   description: string;
   total_coins: number;
   like_count: number;
+  created_at: Dayjs;
 }
 
 export interface Comments {

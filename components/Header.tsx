@@ -32,11 +32,8 @@ const FilterSearch = () => (
 export function SearchBoxWithText() {
   return (
     <div className="gap-0.5 md:min-w-[42%]">
-      <Textarea placeholder="Type your message here." id="message-2" />
-      <div className="flex flex-row justify-between">
-        <small className="text-sm text-muted-foreground mt-2">
-          What app are looking for?
-        </small>
+      <Textarea placeholder="What app are looking for?" id="message-2" />
+      <div className="float-end">
         <FilterSearch />
       </div>
     </div>
@@ -54,7 +51,7 @@ export default function Header() {
           <SignInButton />
         </div>
       </div>
-      <div className="mt-10">
+      <div className="my-10">
         <SearchBoxWithText />
       </div>
     </div>
