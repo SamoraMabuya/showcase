@@ -18,7 +18,7 @@ const CoinIcon = () => (
 );
 
 const Coins = ({ coins }: { coins: number }) => (
-  <Button variant="ghost">
+  <Button variant="ghost" size={"sm"}>
     <CoinIcon />
     <Label className="ml-3" htmlFor="coins">
       {coins}

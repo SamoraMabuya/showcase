@@ -60,7 +60,7 @@ export default function Likes({ videoId }: LikesProps) {
   );
 
   return (
-    <Button variant="ghost" onClick={handleLike}>
+    <Button variant="ghost" size={"sm"} onClick={handleLike}>
       <LikeIcon />
       <Label className="ml-3" htmlFor="like">
         {likes}
