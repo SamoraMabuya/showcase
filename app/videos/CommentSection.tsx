@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Comments } from "./types";
+import { Comments } from "../../lib/types";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";

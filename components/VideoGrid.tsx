@@ -1,44 +1,59 @@
+"use client";
 import React from "react";
 import Link from "next/link";
-import { Videos } from "@/app/videos/types";
+import { Videos } from "@/lib/types";
 import dayjs from "dayjs";
+import { AspectRatio } from "@radix-ui/react-aspect-ratio";
+import Coins from "./Coins";
+import Likes from "@/app/videos/Likes";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 interface VideoGridProps {
   videos: Videos[];
 }
 
-const VideoGrid: React.FC<VideoGridProps> = ({ videos }) => {
+const VideoGrid = ({ videos }: VideoGridProps) => {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {videos.map((video) => (
-        <div
-          key={video.id}
-          className="bg-white rounded-lg shadow-md overflow-hidden"
-        >
-          <Link href={`/video/${video.id}`}>
-            <img
-              src={video.thumbnail_url || "/placeholder-thumbnail.jpg"}
-              alt={video.title}
-              className="w-full h-48 object-cover"
-            />
-            <div className="p-4">
-              <h2 className="font-bold text-lg mb-2 truncate">{video.title}</h2>
-              <p className="text-gray-600 text-sm mb-2 truncate">
-                {video.tagline}
-              </p>
-              <div className="flex justify-between items-center text-sm text-gray-500">
-                <span>{video.like_count} likes</span>
-                <span>{video.total_coins} coins</span>
-              </div>
-              <p className="text-gray-600 text-xs mt-2">
-                {dayjs(video.created_at).format("MMMM D, YYYY")}
-              </p>
+    <div className="mt-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {videos.map((video) => (
+          <Link
+            className="flex flex-col"
+            href={`/video/${video.id}`}
+            key={video.id}
+          >
+            <div className="relative">
+              <AspectRatio ratio={16 / 9}>
+                <video
+                  className="w-full h-full object-cover rounded-md"
+                  src={video.video_url}
+                  poster={video.thumbnail_url}
+                />
+              </AspectRatio>
             </div>
+            <article className="flex flex-col mt-4">
+              <dl className="block">
+                <dt className="font-bold text-lg">{video.title}</dt>
+                <dd className="text-sm text-muted-foreground">
+                  {video.tagline}
+                </dd>
+              </dl>
+              <aside className="flex justify-between">
+                <span>
+                  <small>{dayjs(video?.created_at).fromNow()}</small>
+                </span>
+
+                <span>
+                  <Coins coins={video.total_coins} />
+                  <Likes videoId={video.id} />
+                </span>
+              </aside>
+            </article>
           </Link>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   );
 };
-
 export default VideoGrid;

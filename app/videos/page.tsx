@@ -4,7 +4,7 @@ import CommentSection from "./CommentSection";
 import SuggestedVideos from "./SuggestedVideos";
 import { Card } from "@/components/Card";
 import { createClient } from "@/utils/supabase/client";
-import { Videos } from "./types"; // Use the renamed type
+import { Videos } from "../../lib/types"; // Use the renamed type
 import Likes from "./Likes";
 import CoinsAwarded from "./CoinsAwarded";
 import { Label } from "@/components/Label";

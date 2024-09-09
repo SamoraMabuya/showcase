@@ -1,4 +1,4 @@
-import { Videos } from "./types";
+import { Videos } from "../../lib/types";
 
 export default function VideoCard({ video }: { video: Videos }) {
   return (
