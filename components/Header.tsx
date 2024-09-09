@@ -1,10 +1,11 @@
-import { Filter } from "lucide-react";
+"use client";
 import NextLogo from "./NextLogo";
 import SupabaseLogo from "./SupabaseLogo";
-
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/Button";
 import SideDrawer from "./Drawer";
 import { Textarea } from "./TextArea";
+import { useCallback, useEffect, useState } from "react";
 
 const SignInButton = () => (
   <Button className="md: float-end" variant={"outline"}>
@@ -30,9 +31,45 @@ const FilterSearch = () => (
 );
 
 export function SearchBoxWithText() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get("q") || "");
+  });
+
+  const createQueryString = useCallback(
+    (name: string, value: string) => {
+      const params = new URLSearchParams(searchParams);
+      if (value) {
+        params.set(name, value);
+      } else {
+        params.delete(name);
+      }
+      return params.toString();
+    },
+    [searchParams]
+  );
+
+  const handleSearch = () => {
+    router.push(pathname + "?" + createQueryString("q", searchQuery));
+  };
+
   return (
     <div className="gap-0.5 md:min-w-[42%]">
-      <Textarea placeholder="What app are looking for?" id="message-2" />
+      <Textarea
+        placeholder="What app are looking for?"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        onKeyUp={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            handleSearch();
+          }
+        }}
+      />
       <div className="float-end">
         <FilterSearch />
       </div>
