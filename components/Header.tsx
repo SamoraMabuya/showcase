@@ -6,6 +6,7 @@ import { Button } from "@/components/Button";
 import SideDrawer from "./Drawer";
 import { Textarea } from "./TextArea";
 import { useCallback, useEffect, useState } from "react";
+import { SearchBar } from "./SearchBar";
 
 const SignInButton = () => (
   <Button className="md: float-end" variant={"outline"}>
@@ -30,50 +31,6 @@ const FilterSearch = () => (
   </svg>
 );
 
-export function SearchBoxWithText() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const [searchQuery, setSearchQuery] = useState("");
-
-  useEffect(() => {
-    setSearchQuery(searchParams.get("q") || "");
-  }, [searchParams]);
-
-  const createQueryString = useCallback(
-    (name: string, value: string) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-      return params.toString();
-    },
-    [searchParams]
-  );
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      router.push(pathname + "?" + createQueryString("q", searchQuery.trim()));
-    }
-  };
-
-  return (
-    <div className="gap-0.5 md:min-w-[42%]">
-      <Textarea
-        placeholder="What app are looking for?"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            handleSearch();
-          }
-        }}
-      />
-      <div className="float-end">
-        <FilterSearch />
-      </div>
-    </div>
-  );
-}
-
 export default function Header() {
   return (
     <div className="mx-4">
@@ -86,53 +43,8 @@ export default function Header() {
         </div>
       </div>
       <div className="my-10">
-        <SearchBoxWithText />
+        <SearchBar />
       </div>
     </div>
   );
 }
-
-// import NextLogo from "./NextLogo";
-// import SupabaseLogo from "./SupabaseLogo";
-
-// export default function Header() {
-//   return (
-//     <div className="flex flex-col gap-16 items-center">
-//       <div className="flex gap-8 justify-center items-center">
-//         <a
-//           href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-//           target="_blank"
-//           rel="noreferrer"
-//         >
-//           <SupabaseLogo />
-//         </a>
-//         <span className="border-l rotate-45 h-6" />
-//         <a href="https://nextjs.org/" target="_blank" rel="noreferrer">
-//           <NextLogo />
-//         </a>
-//       </div>
-//       <h1 className="sr-only">Supabase and Next.js Starter Template</h1>
-//       <p className="text-3xl lg:text-4xl !leading-tight mx-auto max-w-xl text-center">
-//         The fastest way to build apps with{" "}
-//         <a
-//           href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-//           target="_blank"
-//           className="font-bold hover:underline"
-//           rel="noreferrer"
-//         >
-//           Supabase
-//         </a>{" "}
-//         and{" "}
-//         <a
-//           href="https://nextjs.org/"
-//           target="_blank"
-//           className="font-bold hover:underline"
-//           rel="noreferrer"
-//         >
-//           Next.js
-//         </a>
-//       </p>
-//       <div className="w-full p-[1px] bg-gradient-to-r from-transparent via-foreground/10 to-transparent my-8" />
-//     </div>
-//   );
-// }
