@@ -38,23 +38,20 @@ export function SearchBoxWithText() {
 
   useEffect(() => {
     setSearchQuery(searchParams.get("q") || "");
-  });
+  }, [searchParams]);
 
   const createQueryString = useCallback(
     (name: string, value: string) => {
       const params = new URLSearchParams(searchParams);
-      if (value) {
-        params.set(name, value);
-      } else {
-        params.delete(name);
-      }
+      params.set(name, value);
       return params.toString();
     },
     [searchParams]
   );
-
   const handleSearch = () => {
-    router.push(pathname + "?" + createQueryString("q", searchQuery));
+    if (searchQuery.trim()) {
+      router.push(pathname + "?" + createQueryString("q", searchQuery.trim()));
+    }
   };
 
   return (
