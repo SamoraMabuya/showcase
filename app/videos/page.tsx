@@ -10,12 +10,14 @@ import CoinsAwarded from "./CoinsAwarded";
 import { Label } from "@/components/Label";
 import { Button } from "@/components/Button";
 import { shortenText } from "@/lib/text";
+import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 
 export default function VideoPage() {
   const [video, setVideo] = useState<Videos | null>(null); // Use VideoType for type definition
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState<string | null>(null);
   const [expandText, setExpandText] = useState(false);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   // Fetch the selected video (hardcoded for now as an example)
   useEffect(() => {
@@ -26,7 +28,8 @@ export default function VideoPage() {
           `
           *,
           users (
-            username
+            username,
+            avatar_url
           )
         `
         )
@@ -38,6 +41,7 @@ export default function VideoPage() {
       } else {
         setVideo(data as Videos);
         setUploader(data.users.username);
+        setAvatarUrl(data?.users.avatar);
       }
       setLoading(false);
     };
@@ -79,6 +83,16 @@ export default function VideoPage() {
               <CoinsAwarded videoId={video.id} userId={video.user_id} />
             </div>
             <div className="float-right">
+              <Avatar className="mr-2">
+                <AvatarImage
+                  src={avatarUrl || undefined}
+                  alt={uploader || undefined}
+                />
+                <AvatarFallback>
+                  {uploader?.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+
               <Label htmlFor="username">{uploader}</Label>
             </div>
           </div>
