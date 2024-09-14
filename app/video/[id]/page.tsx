@@ -1,17 +1,17 @@
 "use client"; // Client-side page
 import { useState, useEffect } from "react";
-import CommentSection from "./CommentSection";
-import SuggestedVideos from "./SuggestedVideos";
 import { Card } from "@/components/Card";
 import { createClient } from "@/utils/supabase/client";
-import { Videos } from "../../lib/types"; // Use the renamed type
-import Likes from "./Likes";
-import CoinsAwarded from "./CoinsAwarded";
-import { Label } from "@/components/Label";
 import { Button } from "@/components/Button";
 import { shortenText } from "@/lib/text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/Avatar";
 import { useParams } from "next/navigation";
+import CoinsAwarded from "@/app/videos/CoinsAwarded";
+import CommentSection from "@/app/videos/CommentSection";
+import Likes from "@/app/videos/Likes";
+import SuggestedVideos from "@/app/videos/SuggestedVideos";
+import { Videos } from "@/lib/types";
+import { Label } from "@radix-ui/react-label";
 
 export default function VideoPage() {
   const [video, setVideo] = useState<Videos | null>(null);
@@ -20,11 +20,10 @@ export default function VideoPage() {
   const [expandText, setExpandText] = useState(false);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const params = useParams();
-  const videoId = params.id;
+
+  // Fetch the selected video (hardcoded for now as an example)
   useEffect(() => {
     const fetchVideo = async () => {
-      if (!videoId) return;
-
       const { data, error } = await createClient()
         .from("videos")
         .select(
@@ -36,21 +35,21 @@ export default function VideoPage() {
           )
         `
         )
-        .eq("id", videoId)
-        .single();
+        .eq("id", params.id) // Replace with actual video ID
+        .single(); // Fetch the selected video
 
       if (error) {
         console.error("Error fetching video:", error.message);
       } else {
         setVideo(data as Videos);
-        setUploader(data.users.username);
+        setUploader(data?.users?.username);
         setAvatarUrl(data?.users.avatar_url);
       }
       setLoading(false);
     };
 
     fetchVideo();
-  }, [videoId]);
+  }, [params.id]);
 
   if (loading) {
     return <p>Loading video...</p>;
