@@ -10,10 +10,10 @@ import CoinsAwarded from "./CoinsAwarded";
 import { Label } from "@/components/Label";
 import { Button } from "@/components/Button";
 import { shortenText } from "@/lib/text";
-import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/Avatar";
 
 export default function VideoPage() {
-  const [video, setVideo] = useState<Videos | null>(null); // Use VideoType for type definition
+  const [video, setVideo] = useState<Videos | null>(null);
   const [loading, setLoading] = useState(true);
   const [uploader, setUploader] = useState<string | null>(null);
   const [expandText, setExpandText] = useState(false);
@@ -41,7 +41,7 @@ export default function VideoPage() {
       } else {
         setVideo(data as Videos);
         setUploader(data.users.username);
-        setAvatarUrl(data?.users.avatar);
+        setAvatarUrl(data?.users.avatar_url);
       }
       setLoading(false);
     };
@@ -59,6 +59,9 @@ export default function VideoPage() {
 
   const handleExpandText = () => setExpandText(!expandText);
   const maxLengthOfText = 200;
+  const avatarFallBack = uploader?.slice(0, 2).toUpperCase();
+
+  const avatarImage = avatarUrl || avatarFallBack;
 
   return (
     <div className="container mx-auto p-4">
@@ -82,15 +85,14 @@ export default function VideoPage() {
               <Likes videoId={video.id} />
               <CoinsAwarded videoId={video.id} userId={video.user_id} />
             </div>
-            <div className="float-right">
-              <Avatar className="mr-2">
+            <div className="float-right flex align-middle items-center space-x-2">
+              <Avatar>
                 <AvatarImage
-                  src={avatarUrl || undefined}
-                  alt={uploader || undefined}
+                  src={avatarImage}
+                  alt={avatarFallBack}
+                  className="object-cover"
                 />
-                <AvatarFallback>
-                  {uploader?.slice(0, 2).toUpperCase()}
-                </AvatarFallback>
+                <AvatarFallback>{avatarFallBack}</AvatarFallback>
               </Avatar>
 
               <Label htmlFor="username">{uploader}</Label>
@@ -99,7 +101,6 @@ export default function VideoPage() {
         </div>
         <div className="mt-4">
           <p>
-            {" "}
             {expandText
               ? video.description
               : shortenText(video.description, maxLengthOfText)}
