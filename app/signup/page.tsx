@@ -1,24 +1,15 @@
+// app/signup/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { login, signup } from "./action";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { signup } from "../login/action"; // Adjust this import path as needed
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const router = useRouter();
 
-  const handleLogin = async (formData: FormData) => {
-    const result = await login(formData);
-    if (result.error) {
-      setMessage(result.error);
-      setIsError(true);
-    } else if (result.success) {
-      router.push("/");
-    }
-  };
   const handleSignup = async (formData: FormData) => {
     const result = await signup(formData);
     if (result.error) {
@@ -49,11 +40,27 @@ export default function LoginPage() {
         )}
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Account Login
+            Create an Account
           </h2>
         </div>
-        <form className="mt-8 space-y-6 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <form
+          className="mt-8 space-y-6 bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+          action={handleSignup}
+        >
           <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="username" className="sr-only">
+                Username
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                placeholder="Username"
+              />
+            </div>
             <div>
               <label htmlFor="email" className="sr-only">
                 Email
@@ -76,53 +83,19 @@ export default function LoginPage() {
                 name="password"
                 type="password"
                 required
-                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                 placeholder="Password"
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-              />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Forgot your password?
-              </a>
-            </div>
-          </div>
-
-          <div className="flex justify-between space-x-4">
+          <div>
             <button
               type="submit"
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Log in
+              Sign up
             </button>
-            <div className="text-center">
-              <Link
-                href="/signup"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
-              >
-                Don't have an account? Sign up
-              </Link>
-            </div>
           </div>
         </form>
       </div>

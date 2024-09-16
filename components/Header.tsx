@@ -2,17 +2,11 @@
 import NextLogo from "./NextLogo";
 import SupabaseLogo from "./SupabaseLogo";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/Button";
+import { Button, buttonVariants } from "@/components/Button";
 import SideDrawer from "./Drawer";
-import { Textarea } from "./TextArea";
-import { useCallback, useEffect, useState } from "react";
 import { SearchBar } from "./SearchBar";
-
-const SignInButton = () => (
-  <Button className="md: float-end" variant={"outline"}>
-    Sign In
-  </Button>
-);
+import Link from "next/link";
+import { AuthButton } from "./AuthButton";
 
 const FilterSearch = () => (
   <svg
@@ -39,7 +33,7 @@ export default function Header() {
           <SideDrawer />
         </div>
         <div>
-          <SignInButton />
+          <AuthButton />
         </div>
       </div>
       <div className="my-10">
