@@ -12,59 +12,35 @@ import { Button } from "@/components/Button";
 import { shortenText } from "@/lib/text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/Avatar";
 import { useParams } from "next/navigation";
-
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import useSupabaseServer from "@/utils/supabase/server";
+import useSupabaseBrowser from "@/utils/supabase-browser";
+import { getVideosById } from "@/queries";
 export default function VideoPage() {
-  const [video, setVideo] = useState<Videos | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [uploader, setUploader] = useState<string | null>(null);
-  const [expandText, setExpandText] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const params = useParams();
-  const videoId = params.id;
-  useEffect(() => {
-    const fetchVideo = async () => {
-      if (!videoId) return;
+  const videoId = params.id as string;
+  const [expandText, setExpandText] = useState(false);
 
-      const { data, error } = await createClient()
-        .from("videos")
-        .select(
-          `
-          *,
-          users (
-            username,
-            avatar_url
-          )
-        `
-        )
-        .eq("id", videoId)
-        .single();
-
-      if (error) {
-        console.error("Error fetching video:", error.message);
-      } else {
-        setVideo(data as Videos);
-        setUploader(data.users.username);
-        setAvatarUrl(data?.users.avatar_url);
-      }
-      setLoading(false);
-    };
-
-    fetchVideo();
-  }, [videoId]);
-
-  if (loading) {
-    return <p>Loading video...</p>;
-  }
-
-  if (!video) {
-    return <p>No video found</p>;
-  }
+  const {
+    data: video,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["video", videoId],
+    queryFn: () => getVideosById(createClient(), parseInt(videoId)),
+    enabled: !!videoId,
+  });
 
   const handleExpandText = () => setExpandText(!expandText);
   const maxLengthOfText = 200;
-  const avatarFallBack = uploader?.slice(0, 2).toUpperCase();
 
-  const avatarImage = avatarUrl || avatarFallBack;
+  if (isLoading) return <p>Loading video...</p>;
+  if (error) return <p>Error loading video: {(error as Error).message}</p>;
+  if (!video) return <p>No video found</p>;
+
+  const avatarFallBack = video.users?.username?.slice(0, 2).toUpperCase();
+  const avatarImage = video.users?.avatar_url || avatarFallBack;
+  const videoDescription = video.description ? video.description : "";
 
   return (
     <div className="container mx-auto p-4">
@@ -98,7 +74,7 @@ export default function VideoPage() {
                 <AvatarFallback>{avatarFallBack}</AvatarFallback>
               </Avatar>
 
-              <Label htmlFor="username">{uploader}</Label>
+              <Label htmlFor="username">{video.users?.username}</Label>
             </div>
           </div>
         </div>
@@ -106,9 +82,9 @@ export default function VideoPage() {
           <p>
             {expandText
               ? video.description
-              : shortenText(video.description, maxLengthOfText)}
+              : shortenText(videoDescription, maxLengthOfText)}
           </p>
-          {video.description.length > maxLengthOfText && (
+          {videoDescription.length > maxLengthOfText && (
             <Button
               variant={"outline"}
               onClick={handleExpandText}
