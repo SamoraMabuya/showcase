@@ -12,9 +12,7 @@ import { Button } from "@/components/Button";
 import { shortenText } from "@/lib/text";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/Avatar";
 import { useParams } from "next/navigation";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import useSupabaseServer from "@/utils/supabase/server";
-import useSupabaseBrowser from "@/utils/supabase-browser";
+import { useQuery } from "@tanstack/react-query";
 import { getVideosById } from "@/queries";
 export default function VideoPage() {
   const params = useParams();

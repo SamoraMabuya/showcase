@@ -1,6 +1,8 @@
 import { Button } from "@/components/Button";
 import { Label } from "@/components/Label";
+import { getLikesCount, updateLikes } from "@/queries";
 import { createClient } from "@/utils/supabase/client";
+import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 
 interface LikesProps {
@@ -8,43 +10,27 @@ interface LikesProps {
 }
 
 export default function Likes({ videoId }: LikesProps) {
-  const [likes, setLikes] = useState(0);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const client = createClient();
 
-  // Fetch likes from the "videos" table
-  useEffect(() => {
-    const fetchLikesData = async () => {
-      const { data, error } = await createClient()
-        .from("videos") // Fetch likes count from videos table
-        .select("like_count")
-        .eq("id", videoId)
-        .single();
+  const { data: likes, isLoading } = useQuery({
+    queryKey: ["likes", videoId],
+    queryFn: () => getLikesCount(client, videoId),
+  });
 
-      if (error) {
-        console.error("Error fetching likes:", error.message);
-      } else {
-        setLikes(data.like_count || 0); // Set likes to the fetched count
-      }
-      setLoading(false);
-    };
+  const mutation = useMutation({
+    mutationFn: (newCount: number) => updateLikes(client, videoId, newCount),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["likes", videoId] });
+    },
+  });
 
-    fetchLikesData();
-  }, [videoId]);
-
-  // Handle like button click
-  const handleLike = async () => {
-    setLikes(likes + 1); // Optimistic UI update
-    const { error } = await createClient()
-      .from("videos")
-      .update({ likes: likes + 1 }) // Increment likes count
-      .eq("id", videoId);
-
-    if (error) {
-      console.error("Error updating likes:", error.message);
+  const handleLike = () => {
+    if (typeof likes === "number") {
+      mutation.mutate(likes + 1);
     }
   };
-
-  if (loading) {
+  if (isLoading) {
     return <p>Loading likes...</p>;
   }
 

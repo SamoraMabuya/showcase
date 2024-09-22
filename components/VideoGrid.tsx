@@ -7,10 +7,11 @@ import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Coins from "./Coins";
 import Likes from "@/app/videos/Likes";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { VideosType } from "@/queries";
 dayjs.extend(relativeTime);
 
 interface VideoGridProps {
-  videos: Videos[];
+  videos: VideosType[];
 }
 
 const VideoGrid = ({ videos }: VideoGridProps) => {

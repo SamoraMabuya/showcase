@@ -2,16 +2,16 @@ import { Dayjs } from "dayjs";
 import { ReactNode } from "react";
 
 export interface Videos {
+  created_at: string;
+  description: string | null;
   id: string;
-  title: string;
-  tagline: string;
-  video_url: string;
-  thumbnail_url: string;
+  like_count: number | null;
+  tagline: string | null;
+  thumbnail_url: string | null;
+  title: string | null;
+  total_coins: number | null;
   user_id: string;
-  description: string;
-  total_coins: number;
-  like_count: number;
-  created_at: Dayjs;
+  video_url: string;
 }
 
 export interface Comments {

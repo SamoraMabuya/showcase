@@ -7,6 +7,8 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { Collapsible, CollapsibleContent } from "@/components/Collapsible";
 import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { getComments } from "@/queries";
 dayjs.extend(relativeTime);
 
 // types.ts
@@ -16,58 +18,21 @@ interface CommentSectionProps {
 }
 
 export default function CommentSection({ videoId }: CommentSectionProps) {
-  const [comments, setComments] = useState<Comments[]>([]); // Define the type for comments
-  const [newComment, setNewComment] = useState<string>(""); // Type for new comment
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
-  const [error, setError] = useState<string | null>(null); // Error state
+  const [newComment, setNewComment] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
+  const client = createClient();
 
-  // Fetch comments when the component mounts or when videoId changes
-  useEffect(() => {
-    const fetchComments = async () => {
-      setLoading(true); // Set loading state
+  const {
+    data: comments,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["comments", videoId],
+    queryFn: () => getComments(client, videoId),
+  });
 
-      const { data, error } = await createClient()
-        .from("comments")
-        .select("*")
-        .eq("video_id", videoId);
-
-      if (error) {
-        setError("Failed to load comments.");
-        console.error("Error fetching comments:", error.message);
-      } else {
-        setComments(data || []);
-      }
-
-      setLoading(false); // Stop loading
-    };
-
-    fetchComments();
-  }, [videoId]);
-
-  const handleAddComment = async () => {
-    if (!newComment.trim()) return; // Prevent adding empty comments
-
-    const { data, error } = await createClient()
-      .from("comments")
-      .insert([{ video_id: videoId, content: newComment }])
-      .select(); // This returns the inserted comment
-
-    if (error) {
-      console.error("Error adding comment:", error.message);
-    } else {
-      setComments((prevComments) => [...prevComments, data[0]]); // Append the newly inserted comment to the list
-      setNewComment(""); // Clear the input after successful submission
-    }
-  };
-
-  if (loading) {
-    return <p>Loading comments...</p>;
-  }
-
-  if (error) {
-    return <p>{error}</p>;
-  }
+  if (isLoading) return <p>Loading comments...</p>;
+  if (error) return <p>Error loading comments: {(error as Error).message}</p>;
 
   const ExpandIcon = () => (
     <svg
@@ -110,7 +75,7 @@ export default function CommentSection({ videoId }: CommentSectionProps) {
               onChange={(e) => setNewComment(e.target.value)}
             />
           </div>
-          {comments.length > 0 ? (
+          {comments ? (
             <ul className="list-none space-y-2 w-full">
               {comments.map((comment, index) => (
                 <li key={index} className=" p-2 rounded-md">

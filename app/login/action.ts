@@ -61,7 +61,7 @@ export async function signup(formData: FormData) {
 
   // Check if email confirmation is required
   if (signUpData.user && !signUpData.user.confirmed_at) {
-    return { message: "Please check your email to confirm your account." };
+    return { message: "Please check your email to  your account." };
   }
 
   revalidatePath("/", "layout");
