@@ -1,50 +1,50 @@
-"use client";
-
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { createClient } from "@/utils/supabase/client";
 import { buttonVariants } from "./Button";
+import { useAuth } from "@/app/hooks/useAuth";
+import {
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from "@radix-ui/react-popover";
+import { createClient } from "@/utils/supabase/client";
 
 export function AuthButton() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user, isLoading } = useAuth();
   const supabase = createClient();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
-    };
-
-    checkAuth();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setIsAuthenticated(!!session);
-      }
-    );
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabase.auth]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
 
-  if (isAuthenticated) {
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (user) {
     return (
-      <button
-        onClick={handleSignOut}
-        className={buttonVariants({
-          variant: "outline",
-          className: "md: float-end",
-        })}
-      >
-        Sign Out
-      </button>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            className={buttonVariants({
+              variant: "ghost",
+              className: "md:float-end",
+            })}
+          >
+            {user.email}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-50">
+          <button
+            onClick={handleSignOut}
+            className={buttonVariants({
+              variant: "ghost",
+              className: "w-full",
+            })}
+          >
+            Sign Out
+          </button>
+        </PopoverContent>
+      </Popover>
     );
   }
 
@@ -53,7 +53,7 @@ export function AuthButton() {
       href="/login"
       className={buttonVariants({
         variant: "outline",
-        className: "md: float-end",
+        className: "md:float-end",
       })}
     >
       Sign In

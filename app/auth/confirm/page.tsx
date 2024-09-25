@@ -1,44 +1,34 @@
-// app/auth/confirm/page.tsx
 "use client";
 
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
-export default function VerificationSuccessPage() {
+export default function ConfirmPage() {
   const [message, setMessage] = useState("Verifying your account...");
-  const [isError, setIsError] = useState(false);
-  const searchParams = useSearchParams();
+  const [isVerified, setIsVerified] = useState(false);
+  const router = useRouter();
+  const supabase = createClient();
 
   useEffect(() => {
-    const verifyAccount = async () => {
-      const supabase = createClient();
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
 
-      const token_hash = searchParams.get("token_hash");
-      const type = searchParams.get("type");
-
-      if (token_hash && type) {
-        const { error } = await supabase.auth.verifyOtp({
-          token_hash,
-          type: "signup",
-        });
-        if (error) {
-          setMessage(
-            "Verification failed. Please try again or contact support."
-          );
-          setIsError(true);
-        } else {
-          setMessage("Your account has been successfully verified!");
-        }
+      if (session) {
+        setMessage(
+          "Congratulations! Your account has been successfully verified."
+        );
+        setIsVerified(true);
       } else {
-        setMessage("Invalid verification link. Please try signing up again.");
-        setIsError(true);
+        setMessage("Verification failed. Please try signing up again.");
       }
     };
 
-    verifyAccount();
-  }, [searchParams]);
+    checkSession();
+  }, []);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -48,20 +38,14 @@ export default function VerificationSuccessPage() {
             Email Verification
           </h2>
         </div>
-        <div
-          className={`mt-2 text-center ${
-            isError ? "text-red-600" : "text-green-600"
-          }`}
-        >
-          {message}
-        </div>
-        {!isError && (
+        <div className="mt-2 text-center text-green-600">{message}</div>
+        {isVerified && (
           <div className="mt-5 text-center">
             <Link
-              href="/"
+              href="/protected"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
-              Continue to your account
+              Go to your account
             </Link>
           </div>
         )}

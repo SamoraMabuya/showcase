@@ -30,20 +30,14 @@ export async function login(formData: FormData) {
 
 export async function signup(formData: FormData) {
   const supabase = createClient();
-
-  const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
-
+  const email = formData.get("email") as string;
   const username = formData.get("username") as string;
 
-  const { error, data: signUpData } = await supabase.auth.signUp({
-    ...data,
+  const { data, error } = await supabase.auth.signInWithOtp({
+    email,
     options: {
-      data: {
-        username: username,
-      },
+      data: { username },
+      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
     },
   });
 
@@ -51,19 +45,5 @@ export async function signup(formData: FormData) {
     return { error: error.message };
   }
 
-  if (
-    signUpData.user &&
-    signUpData.user.identities &&
-    signUpData.user.identities.length === 0
-  ) {
-    return { error: "User already exists. Please log in." };
-  }
-
-  // Check if email confirmation is required
-  if (signUpData.user && !signUpData.user.confirmed_at) {
-    return { message: "Please check your email to  your account." };
-  }
-
-  revalidatePath("/", "layout");
-  return { success: true };
+  return { message: "Please check your email for the login link." };
 }
