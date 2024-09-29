@@ -1,7 +1,5 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 
 export async function login(formData: FormData) {
@@ -18,7 +16,6 @@ export async function login(formData: FormData) {
     return { error: error.message };
   }
 
-  revalidatePath("/", "layout");
   return { success: true };
 }
 export async function signup(formData: FormData) {
@@ -27,7 +24,7 @@ export async function signup(formData: FormData) {
   const password = formData.get("password") as string;
   const username = formData.get("username") as string;
 
-  const { data, error } = await supabase.auth.signUp({
+  const { data: authData, error: authError } = await supabase.auth.signUp({
     email,
     password,
     options: {
@@ -37,12 +34,23 @@ export async function signup(formData: FormData) {
     },
   });
 
-  if (error) {
-    return { error: error.message };
+  if (authError) {
+    return { error: authError.message };
   }
 
-  return {
-    success: true,
-    message: "Please check your email for the confirmation link.",
-  };
+  // Ensure a record is created in the users table
+  if (authData.user) {
+    const { error: insertError } = await supabase.from("users").insert({
+      id: authData.user.id,
+      email: authData.user.email,
+      username: username,
+    });
+
+    if (insertError) {
+      console.error("Error creating user record:", insertError);
+      return { error: "Failed to create user record" };
+    }
+  }
+
+  return { message: "Please check your email for the confirmation link." };
 }

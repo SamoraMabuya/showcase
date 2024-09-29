@@ -81,10 +81,23 @@ export const addComment = async (
   videoId: string,
   content: string,
   parentId?: string
-): Promise<Comments> => {
+) => {
   const { data: userData, error: userError } = await client.auth.getUser();
   if (userError) throw userError;
 
+  // Check if the user exists in the users table
+  const { data: userExists, error: userCheckError } = await client
+    .from("users")
+    .select("id")
+    .eq("id", userData.user.id)
+    .single();
+
+  if (userCheckError || !userExists) {
+    console.error("User does not exist in users table:", userData.user.id);
+    throw new Error("User does not exist in the database");
+  }
+
+  // If the user exists, proceed with adding the comment
   const { data, error } = await client
     .from("comments")
     .insert({
@@ -97,12 +110,12 @@ export const addComment = async (
     .select()
     .single();
 
-  if (error) throw error;
-  if (!data) throw new Error("No data returned from insert operation");
-
-  return data as Comments;
+  if (error) {
+    console.error("Error inserting comment:", error);
+    throw error;
+  }
+  return data;
 };
-
 // Suggested Videos
 
 type SuggestedVideos = Tables<"videos">;

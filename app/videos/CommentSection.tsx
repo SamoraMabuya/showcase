@@ -10,6 +10,7 @@ import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getComments, addComment } from "@/queries";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useRouter } from "next/navigation";
 
 dayjs.extend(relativeTime);
 
@@ -20,13 +21,23 @@ interface CommentSectionProps {
 interface CommentItemProps {
   comment: Comments;
   onReply: (parentId: string, content: string) => void;
+  onNavigateToLogin: () => void;
 }
 
-const CommentItem = ({ comment, onReply }: CommentItemProps) => {
+const CommentItem = ({
+  comment,
+  onReply,
+  onNavigateToLogin,
+}: CommentItemProps) => {
   const [replyContent, setReplyContent] = useState("");
   const [showReplyInput, setShowReplyInput] = useState(false);
+  const { user } = useAuth();
 
   const handleReply = () => {
+    if (!user) {
+      onNavigateToLogin();
+      return;
+    }
     if (replyContent.trim()) {
       onReply(comment.id, replyContent);
       setReplyContent("");
@@ -46,7 +57,9 @@ const CommentItem = ({ comment, onReply }: CommentItemProps) => {
       <Button
         variant="ghost"
         size="sm"
-        onClick={() => setShowReplyInput(!showReplyInput)}
+        onClick={() =>
+          user ? setShowReplyInput(!showReplyInput) : onNavigateToLogin()
+        }
       >
         Reply
       </Button>
@@ -64,7 +77,12 @@ const CommentItem = ({ comment, onReply }: CommentItemProps) => {
       {comment.replies && comment.replies.length > 0 && (
         <ul className="ml-8 mt-2">
           {comment.replies.map((reply) => (
-            <CommentItem key={reply.id} comment={reply} onReply={onReply} />
+            <CommentItem
+              key={reply.id}
+              comment={reply}
+              onReply={onReply}
+              onNavigateToLogin={onNavigateToLogin}
+            />
           ))}
         </ul>
       )}
@@ -78,6 +96,7 @@ export default function CommentSection({ videoId }: CommentSectionProps) {
   const client = createClient();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  const router = useRouter();
 
   const {
     data: comments,
@@ -96,28 +115,38 @@ export default function CommentSection({ videoId }: CommentSectionProps) {
         newCommentData.content,
         newCommentData.parentId
       ),
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log("Comment added successfully:", data);
       queryClient.invalidateQueries({ queryKey: ["comments", videoId] });
       setNewComment("");
+    },
+    onError: (error) => {
+      console.error("Error adding comment:", error);
+      // You might want to show an error message to the user here
     },
   });
 
   const handleAddComment = () => {
     if (!user) {
-      alert("Please sign in to comment.");
+      navigateToLogin();
       return;
     }
     if (newComment.trim()) {
+      console.log("Attempting to add comment:", newComment);
       addCommentMutation.mutate({ content: newComment });
     }
   };
-
   const handleReply = (parentId: string, content: string) => {
     if (!user) {
-      alert("Please sign in to reply.");
+      navigateToLogin();
       return;
     }
     addCommentMutation.mutate({ content, parentId });
+  };
+
+  const navigateToLogin = () => {
+    const currentPath = window.location.pathname;
+    router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
   };
 
   if (isLoading) return <p>Loading comments...</p>;
@@ -159,8 +188,10 @@ export default function CommentSection({ videoId }: CommentSectionProps) {
               placeholder="Add a comment"
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
+              onFocus={() => !user && navigateToLogin()}
             />
-            <Button onClick={handleAddComment} disabled={!user}>
+            <br />
+            <Button type="submit" onClick={handleAddComment} disabled={!user}>
               Post Comment
             </Button>
           </div>
@@ -171,6 +202,7 @@ export default function CommentSection({ videoId }: CommentSectionProps) {
                   key={comment.id}
                   comment={comment}
                   onReply={handleReply}
+                  onNavigateToLogin={navigateToLogin}
                 />
               ))}
             </ul>

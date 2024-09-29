@@ -22,9 +22,8 @@ export interface Comments {
   created_at: string;
   username: string;
   parent_id: string | null;
+  replies?: Comments[];
 }
-
-// If you need to represent a comment with replies in your UI:
 export interface CommentWithReplies extends Comments {
   replies: CommentWithReplies[];
 }

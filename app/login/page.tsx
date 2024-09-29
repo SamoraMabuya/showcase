@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { login } from "./action";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/Button";
 
@@ -10,6 +10,8 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [isError, setIsError] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -19,7 +21,7 @@ export default function LoginPage() {
       setMessage(result.error);
       setIsError(true);
     } else if (result.success) {
-      router.push("/");
+      router.push(redirect);
     }
   };
 
