@@ -11,21 +11,21 @@ export type Database = {
     Tables: {
       coins: {
         Row: {
-          coins_awarded: number | null;
+          coins_awarded: number;
           created_at: string;
           id: string;
           user_id: string | null;
           video_id: string | null;
         };
         Insert: {
-          coins_awarded?: number | null;
+          coins_awarded?: number;
           created_at?: string;
           id?: string;
           user_id?: string | null;
           video_id?: string | null;
         };
         Update: {
-          coins_awarded?: number | null;
+          coins_awarded: number;
           created_at?: string;
           id?: string;
           user_id?: string | null;
@@ -50,17 +50,19 @@ export type Database = {
       };
       comments: {
         Row: {
-          content: string | null;
+          content: string;
           created_at: string;
           id: string;
-          user_id: string | null;
-          username: string | null;
-          video_id: string | null;
+          parent_id: string;
+          user_id: string;
+          username: string;
+          video_id: string;
         };
         Insert: {
           content?: string | null;
           created_at?: string;
           id?: string;
+          parent_id?: string | null;
           user_id?: string | null;
           username?: string | null;
           video_id?: string | null;
@@ -69,11 +71,19 @@ export type Database = {
           content?: string | null;
           created_at?: string;
           id?: string;
+          parent_id?: string | null;
           user_id?: string | null;
           username?: string | null;
           video_id?: string | null;
         };
         Relationships: [
+          {
+            foreignKeyName: "comments_parent_id_fkey";
+            columns: ["parent_id"];
+            isOneToOne: false;
+            referencedRelation: "comments";
+            referencedColumns: ["id"];
+          },
           {
             foreignKeyName: "Comments_user_id_fkey";
             columns: ["user_id"];
@@ -181,10 +191,10 @@ export type Database = {
           id: string;
           like_count: number | null;
           tagline: string | null;
-          thumbnail_url: string | null;
-          title: string | null;
+          thumbnail_url: string;
+          title: string;
           total_coins: number | null;
-          user_id: string;
+          user_id: string | null;
           video_url: string;
         };
         Insert: {

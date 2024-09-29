@@ -1,40 +1,63 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import VideoGrid from "@/components/VideoGrid";
 import { createClient } from "@/utils/supabase/client";
 import { Videos } from "@/lib/types";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter } from "next/navigation";
+
+const fetchVideos = async () => {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("videos")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data || [];
+};
 
 export default function Index() {
-  const [videos, setVideos] = useState<Videos[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [filteredVideos, setFilteredVideos] = useState<Videos[]>([]);
+  const [verificationSuccess, setVerificationSuccess] = useState(false);
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q");
+  const router = useRouter();
+
+  const {
+    data: videos,
+    isLoading,
+    error,
+  } = useQuery<Videos[], Error>({
+    queryKey: ["videos"],
+    queryFn: fetchVideos,
+  });
 
   useEffect(() => {
-    const fetchVideos = async () => {
-      setLoading(true);
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("videos")
-        .select("*")
-        .order("created_at", { ascending: false });
+    // Check if the user just verified their email
+    const success = searchParams.get("verified");
+    if (success === "true") {
+      setVerificationSuccess(true);
 
-      if (error) {
-        setError("Error loading videos. Please try again later.");
-      } else {
-        setVideos(data || []);
-      }
-      setLoading(false);
-    };
+      // Create a new URLSearchParams object without the 'verified' parameter
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+      newSearchParams.delete("verified");
 
-    fetchVideos();
-  }, []);
+      // Construct the new URL
+      const newPathname = `${window.location.pathname}${
+        newSearchParams.toString() ? `?${newSearchParams.toString()}` : ""
+      }`;
+
+      // Replace the current URL without the 'verified' parameter
+      router.replace(newPathname, { scroll: false });
+
+      // Hide the success message after 5 seconds
+      setTimeout(() => setVerificationSuccess(false), 5000);
+    }
+  }, [searchParams, router]);
 
   useEffect(() => {
-    if (searchQuery) {
+    if (videos && searchQuery) {
       const lowerCaseQuery = searchQuery.toLowerCase();
       const filtered = videos.filter(
         (video) =>
@@ -44,25 +67,36 @@ export default function Index() {
       );
       setFilteredVideos(filtered);
     } else {
-      setFilteredVideos(videos);
+      setFilteredVideos(videos || []);
     }
   }, [searchQuery, videos]);
 
-  if (loading) {
+  if (isLoading) {
     return <p>Loading videos...</p>;
   }
 
   if (error) {
-    return <p>{error}</p>;
-  }
-
-  if (!filteredVideos.length) {
-    return <p>No videos available</p>;
+    return <p>Error loading videos. Please try again later.</p>;
   }
 
   return (
     <div className="container mx-auto px-4">
-      <VideoGrid videos={filteredVideos} />
+      {verificationSuccess && (
+        <div
+          className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
+          role="alert"
+        >
+          <strong className="font-bold">Success!</strong>
+          <span className="block sm:inline">
+            Your email has been verified. Welcome to VideoShare!
+          </span>
+        </div>
+      )}
+      {!filteredVideos.length ? (
+        <p>No videos available</p>
+      ) : (
+        <VideoGrid videos={filteredVideos} />
+      )}
     </div>
   );
 }

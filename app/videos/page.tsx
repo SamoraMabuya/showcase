@@ -25,7 +25,7 @@ export default function VideoPage() {
     error,
   } = useQuery({
     queryKey: ["video", videoId],
-    queryFn: () => getVideosById(createClient(), parseInt(videoId)),
+    queryFn: () => getVideosById(createClient(), videoId),
     enabled: !!videoId,
   });
 
@@ -60,7 +60,7 @@ export default function VideoPage() {
           <div className="block">
             <div className="flex">
               <Likes videoId={video.id} />
-              <CoinsAwarded videoId={video.id} userId={video.user_id} />
+              <CoinsAwarded videoId={video.id} />
             </div>
             <div className="float-right flex align-middle items-center space-x-2">
               <Avatar>

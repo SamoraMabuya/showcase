@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { signup } from "../login/action"; // Adjust this import path as needed
+import { signup } from "../login/action";
 
 export default function SignupPage() {
   const [message, setMessage] = useState("");
@@ -15,14 +15,15 @@ export default function SignupPage() {
     if (result.error) {
       setMessage(result.error);
       setIsError(true);
-    } else if (result.message) {
+    } else {
       setMessage(result.message);
       setIsError(false);
-    } else if (result.success) {
-      router.push("/");
+      if (result.success) {
+        // Optionally, you can redirect or perform other actions on successful signup
+        // router.push("/login");
+      }
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">

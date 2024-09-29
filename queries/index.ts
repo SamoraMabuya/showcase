@@ -1,6 +1,6 @@
 import { TypedSupabaseClient } from "@/utils/types";
-import { Database, Tables } from "@/utils/database.types";
-import { Videos } from "@/lib/types";
+import { Tables } from "@/utils/database.types";
+import { Comments } from "@/lib/types";
 
 // Videos
 export type VideosType = Tables<"videos">;
@@ -13,7 +13,7 @@ type VideoWithUser = VideosType & {
 };
 export const getVideosById = async (
   client: TypedSupabaseClient,
-  videoId: number
+  videoId: string
 ): Promise<VideoWithUser> => {
   const { data, error } = await client
     .from("videos")
@@ -66,14 +66,41 @@ export const updateLikes = async (
 export const getComments = async (
   client: TypedSupabaseClient,
   videoId: string
-) => {
+): Promise<Comments[]> => {
   const { data, error } = await client
     .from("comments")
     .select("*")
-    .eq("video_id", videoId);
+    .eq("video_id", videoId)
+    .order("created_at", { ascending: false });
 
   if (error) throw error;
   return data || [];
+};
+export const addComment = async (
+  client: TypedSupabaseClient,
+  videoId: string,
+  content: string,
+  parentId?: string
+): Promise<Comments> => {
+  const { data: userData, error: userError } = await client.auth.getUser();
+  if (userError) throw userError;
+
+  const { data, error } = await client
+    .from("comments")
+    .insert({
+      video_id: videoId,
+      user_id: userData.user.id,
+      content,
+      parent_id: parentId,
+      username: userData.user.user_metadata.username || userData.user.email,
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  if (!data) throw new Error("No data returned from insert operation");
+
+  return data as Comments;
 };
 
 // Suggested Videos

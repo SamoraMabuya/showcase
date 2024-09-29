@@ -3,25 +3,31 @@ import { ReactNode } from "react";
 
 export interface Videos {
   created_at: string;
-  description: string | null;
+  description: string;
   id: string;
   like_count: number | null;
-  tagline: string | null;
-  thumbnail_url: string | null;
-  title: string | null;
-  total_coins: number | null;
+  tagline: string;
+  thumbnail_url: string;
+  title: string;
+  total_coins: number;
   user_id: string;
   video_url: string;
 }
 
 export interface Comments {
-  username: ReactNode;
   id: string;
+  user_id: string;
   video_id: string;
   content: string;
-  created_at: Dayjs;
+  created_at: string;
+  username: string;
+  parent_id: string | null;
 }
 
+// If you need to represent a comment with replies in your UI:
+export interface CommentWithReplies extends Comments {
+  replies: CommentWithReplies[];
+}
 export interface Suggested {
   currentVideoId: string;
 }

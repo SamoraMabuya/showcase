@@ -21,7 +21,7 @@ const Coins = ({ coins }: { coins: number }) => (
   <Button variant="ghost" size={"sm"}>
     <CoinIcon />
     <Label className="ml-3" htmlFor="coins">
-      {coins}
+      {coins > 0 ? coins : 0}
     </Label>
   </Button>
 );

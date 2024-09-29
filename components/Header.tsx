@@ -5,7 +5,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Button, buttonVariants } from "@/components/Button";
 import SideDrawer from "./Drawer";
 import { SearchBar } from "./SearchBar";
-import Link from "next/link";
 import { AuthButton } from "./AuthButton";
 
 const FilterSearch = () => (

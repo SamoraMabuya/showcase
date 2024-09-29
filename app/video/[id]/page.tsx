@@ -1,5 +1,6 @@
-"use client"; // Client-side page
-import { useState, useEffect } from "react";
+"use client";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card } from "@/components/Card";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/Button";
@@ -12,62 +13,43 @@ import Likes from "@/app/videos/Likes";
 import SuggestedVideos from "@/app/videos/SuggestedVideos";
 import { Videos } from "@/lib/types";
 import { Label } from "@radix-ui/react-label";
+import { getVideosById } from "@/queries";
 
 export default function VideoPage() {
-  const [video, setVideo] = useState<Videos | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [uploader, setUploader] = useState<string | null>(null);
   const [expandText, setExpandText] = useState(false);
-  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const params = useParams();
+  const videoId = params.id as string;
+  const supabase = createClient();
 
-  // Fetch the selected video (hardcoded for now as an example)
-  useEffect(() => {
-    const fetchVideo = async () => {
-      const { data, error } = await createClient()
-        .from("videos")
-        .select(
-          `
-          *,
-          users (
-            username,
-            avatar_url
-          )
-        `
-        )
-        .eq("id", params.id) // Replace with actual video ID
-        .single(); // Fetch the selected video
+  const {
+    data: video,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["video", videoId],
+    queryFn: () => getVideosById(supabase, videoId),
+  });
 
-      if (error) {
-        console.error("Error fetching video:", error.message);
-      } else {
-        setVideo(data as Videos);
-        setUploader(data?.users?.username);
-        setAvatarUrl(data?.users.avatar_url);
-      }
-      setLoading(false);
-    };
+  const handleExpandText = () => setExpandText(!expandText);
+  const maxLengthOfText = 200;
 
-    fetchVideo();
-  }, [params.id]);
-
-  if (loading) {
+  if (isLoading) {
     return <p>Loading video...</p>;
+  }
+
+  if (error) {
+    return <p>Error loading video: {(error as Error).message}</p>;
   }
 
   if (!video) {
     return <p>No video found</p>;
   }
 
-  const handleExpandText = () => setExpandText(!expandText);
-  const maxLengthOfText = 200;
-  const avatarFallBack = uploader?.slice(0, 2).toUpperCase();
-
-  const avatarImage = avatarUrl || avatarFallBack;
+  const avatarFallBack = video.users?.username?.slice(0, 2).toUpperCase();
+  const avatarImage = video.users?.avatar_url || avatarFallBack;
 
   return (
     <div className="container mx-auto p-4">
-      {/* Selected Video */}
       <div className="mb-4">
         <div className="relative mb-4">
           <video controls className="w-full rounded-lg">
@@ -85,7 +67,7 @@ export default function VideoPage() {
           <div className="block">
             <div className="flex">
               <Likes videoId={video.id} />
-              <CoinsAwarded videoId={video.id} userId={video.user_id} />
+              <CoinsAwarded videoId={video.id} />
             </div>
             <div className="float-right flex align-middle items-center space-x-2">
               <Avatar>
@@ -97,17 +79,17 @@ export default function VideoPage() {
                 <AvatarFallback>{avatarFallBack}</AvatarFallback>
               </Avatar>
 
-              <Label htmlFor="username">{uploader}</Label>
+              <Label htmlFor="username">{video.users?.username}</Label>
             </div>
           </div>
         </div>
         <div className="mt-4">
           <p>
             {expandText
-              ? video.description
-              : shortenText(video.description, maxLengthOfText)}
+              ? video.description !== undefined
+              : shortenText(video.description || "", maxLengthOfText)}
           </p>
-          {video.description.length > maxLengthOfText && (
+          {video.description && video.description.length > maxLengthOfText && (
             <Button
               variant={"outline"}
               onClick={handleExpandText}

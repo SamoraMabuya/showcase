@@ -42,7 +42,7 @@ export default function ConfirmPage() {
         {isVerified && (
           <div className="mt-5 text-center">
             <Link
-              href="/protected"
+              href="/"
               className="font-medium text-indigo-600 hover:text-indigo-500"
             >
               Go to your account

@@ -16,11 +16,13 @@ export function AuthButton() {
     await supabase.auth.signOut();
   };
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
   if (user) {
+    const displayName =
+      user.user_metadata?.username ||
+      user.user_metadata?.display_name ||
+      user.email ||
+      "User";
+
     return (
       <Popover>
         <PopoverTrigger asChild>
@@ -30,7 +32,7 @@ export function AuthButton() {
               className: "md:float-end",
             })}
           >
-            {user.email}
+            {displayName}
           </button>
         </PopoverTrigger>
         <PopoverContent className="w-50">

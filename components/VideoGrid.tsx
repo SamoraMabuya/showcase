@@ -1,7 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
 import Link from "next/link";
-import { Videos } from "@/lib/types";
 import dayjs from "dayjs";
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Coins from "./Coins";
@@ -83,7 +82,7 @@ const VideoGrid = ({ videos }: VideoGridProps) => {
                 </span>
 
                 <span>
-                  <Coins coins={video.total_coins} />
+                  <Coins coins={video.total_coins || 0} />
                   <Likes videoId={video.id} />
                 </span>
               </aside>

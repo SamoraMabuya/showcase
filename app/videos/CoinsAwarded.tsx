@@ -7,10 +7,9 @@ import { useState, useEffect } from "react";
 
 interface CoinsAwardedProps {
   videoId: string; // The video being awarded
-  userId: string; // The user awarding the coins
 }
 
-export default function CoinsAwarded({ videoId, userId }: CoinsAwardedProps) {
+export default function CoinsAwarded({ videoId }: CoinsAwardedProps) {
   const [coins, setCoins] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
