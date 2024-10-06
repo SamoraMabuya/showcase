@@ -4,7 +4,7 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "update-types": "dotenv -- npx supabase gen types typescript --project-id \"$NEXT_PUBLIC_PROJECT_ID\" > database.types.ts"
+        "update-types": "cross-env SUPABASE_PROJECT_ID=$NEXT_PUBLIC_PROJECT_ID npx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID > database.types.ts"
     },
     "dependencies": {
         "@radix-ui/react-aspect-ratio": "^1.1.0",

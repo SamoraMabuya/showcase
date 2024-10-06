@@ -1,6 +1,7 @@
 import { TypedSupabaseClient } from "@/utils/types";
 import { Tables } from "@/utils/database.types";
 import { Comments } from "@/lib/types";
+import { createClient } from "@/utils/supabase/client";
 
 // Videos
 export type VideosType = Tables<"videos">;
@@ -47,19 +48,61 @@ export const getLikesCount = async (
   if (error) throw error;
   return data?.like_count || 0;
 };
-
-export const updateLikes = async (
+export const getUserLikeStatus = async (
   client: TypedSupabaseClient,
   videoId: string,
-  newCount: number
+  userId: string | undefined
 ) => {
-  const { error } = await client
-    .from("videos")
-    .update({ like_count: newCount })
-    .eq("id", videoId);
+  if (!userId) return false;
+  const { data, error } = await client
+    .from("likes")
+    .select("id")
+    .eq("video_id", videoId)
+    .eq("user_id", userId)
+    .single();
 
-  if (error) throw error;
-  return newCount;
+  if (error && error.code !== "PGRST116") throw error; // PGRST116 is the error code for no rows returned
+  return !!data;
+};
+export const updateLikes = async (
+  client: ReturnType<typeof createClient>,
+  videoId: string,
+  userId: string | undefined,
+  like: boolean
+) => {
+  if (!userId) throw new Error("User must be logged in to like/unlike");
+
+  const { data: existingLike, error: fetchError } = await client
+    .from("likes")
+    .select("id")
+    .eq("video_id", videoId)
+    .eq("user_id", userId)
+    .single();
+
+  if (fetchError && fetchError.code !== "PGRST116") throw fetchError;
+
+  if (like && !existingLike) {
+    // Add like
+    const { error } = await client
+      .from("likes")
+      .insert({ video_id: videoId, user_id: userId });
+    if (error) throw error;
+  } else if (!like && existingLike) {
+    // Remove like
+    const { error } = await client
+      .from("likes")
+      .delete()
+      .eq("id", existingLike.id);
+    if (error) throw error;
+  }
+
+  // Update like count in videos table
+  const { data, error: updateError } = await client.rpc("update_like_count", {
+    video_id: videoId,
+  });
+  if (updateError) throw updateError;
+
+  return data?.[0]?.like_count ?? 0;
 };
 
 // Comments

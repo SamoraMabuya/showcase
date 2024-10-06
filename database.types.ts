@@ -236,7 +236,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      award_coins: {
+        Args: {
+          video_id: string
+          amount: number
+        }
+        Returns: undefined
+      }
+      update_like_count: {
+        Args: {
+          video_id: string
+        }
+        Returns: {
+          like_count: number
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never

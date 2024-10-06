@@ -42,7 +42,6 @@ export default function VideoPage() {
 
   return (
     <div className="container mx-auto p-4">
-      {/* Selected Video */}
       <div className="mb-4">
         <div className="relative mb-4">
           <video controls className="w-full rounded-lg">
