@@ -4,6 +4,7 @@ import * as React from "react";
 import { Drawer as DrawerPrimitive } from "vaul";
 
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 const Drawer = ({
   shouldScaleBackground = true,
@@ -125,18 +126,30 @@ const SideDrawer = () => (
   <Drawer>
     <DrawerTrigger className="absolute top-4 left-4">
       <DrawerMenuIcon />
-    </DrawerTrigger>{" "}
-    {/* Adjust button placement */}
+    </DrawerTrigger>
     <DrawerContent>
       <DrawerHeader>
-        {/* Adjust button placement */}
-        <DrawerTitle>What would you like you like to check out?</DrawerTitle>
+        <DrawerTitle>What would you like to check out?</DrawerTitle>
       </DrawerHeader>
+      <div className="p-4 space-y-4">
+        <Link href="/" className="block px-4 py-2 hover:bg-gray-100 rounded">
+          Home
+        </Link>
+        <Link
+          href="/profile"
+          className="block px-4 py-2 hover:bg-gray-100 rounded"
+        >
+          Profile
+        </Link>
+        <Link
+          href="/upload"
+          className="block px-4 py-2 hover:bg-gray-100 rounded"
+        >
+          Upload Content
+        </Link>
+      </div>
       <DrawerFooter>
-        {/* <Button>Submit</Button> */}
-        <DrawerClose>
-          {/* <Button variant="outline">Cancel</Button> */}
-        </DrawerClose>
+        <DrawerClose />
       </DrawerFooter>
     </DrawerContent>
   </Drawer>

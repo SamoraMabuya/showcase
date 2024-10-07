@@ -2,8 +2,17 @@ import { TypedSupabaseClient } from "@/utils/types";
 import { Tables } from "@/utils/database.types";
 import { Comments } from "@/lib/types";
 import { createClient } from "@/utils/supabase/client";
+import { Database } from "@/database.types";
+type VideoInsert = Database["public"]["Tables"]["videos"]["Insert"];
 
 // Videos
+export const insertVideo = async (
+  client: TypedSupabaseClient,
+  videoData: VideoInsert
+): Promise<void> => {
+  const { error } = await client.from("videos").insert(videoData);
+  if (error) throw error;
+};
 export type VideosType = Tables<"videos">;
 
 type VideoWithUser = VideosType & {
@@ -92,7 +101,7 @@ export const updateLikes = async (
     const { error } = await client
       .from("likes")
       .delete()
-      .eq("id", existingLike.id);
+      .eq("id", existingLike.id); 
     if (error) throw error;
   }
 
