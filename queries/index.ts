@@ -8,7 +8,7 @@ type VideoInsert = Database["public"]["Tables"]["videos"]["Insert"];
 // Videos
 export const insertVideo = async (
   client: TypedSupabaseClient,
-  videoData: VideoInsert
+  videoData: Database['public']['Tables']['videos']['Insert']
 ): Promise<void> => {
   const { error } = await client.from("videos").insert(videoData);
   if (error) throw error;
@@ -101,7 +101,7 @@ export const updateLikes = async (
     const { error } = await client
       .from("likes")
       .delete()
-      .eq("id", existingLike.id); 
+      .eq("id", existingLike.id);
     if (error) throw error;
   }
 

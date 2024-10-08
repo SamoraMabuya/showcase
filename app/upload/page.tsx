@@ -59,18 +59,14 @@ export default function UploadContent() {
         if (videoError) throw videoError;
 
         // Upload thumbnail
-        const { data: thumbnailData, error: thumbnailError } =
-          await supabase.storage
-            .from("thumbnails")
-            .upload(`${Date.now()}_${thumbnail.name}`, thumbnail);
+        const { data: thumbnailData, error: thumbnailError } = await supabase.storage
+          .from("thumbnails")
+          .upload(`${Date.now()}_${thumbnail.name}`, thumbnail);
 
         if (thumbnailError) throw thumbnailError;
 
         // Get current user
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
+        const { data: { user }, error: userError } = await supabase.auth.getUser();
         if (userError) throw userError;
 
         // Prepare video data
@@ -80,6 +76,7 @@ export default function UploadContent() {
           description: data.description,
           video_url: videoData?.path,
           thumbnail_url: thumbnailData?.path,
+          contact_email: data.contactEmail,
           user_id: user?.id,
           created_at: new Date().toISOString(),
           like_count: 0,

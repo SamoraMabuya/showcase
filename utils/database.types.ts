@@ -4,250 +4,267 @@ export type Json =
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
 export type Database = {
   public: {
     Tables: {
       coins: {
         Row: {
-          coins_awarded: number;
-          created_at: string;
-          id: string;
-          user_id: string | null;
-          video_id: string | null;
-        };
+          coins_awarded: number | null
+          created_at: string
+          id: string
+          user_id: string | null
+          video_id: string | null
+        }
         Insert: {
-          coins_awarded?: number;
-          created_at?: string;
-          id?: string;
-          user_id?: string | null;
-          video_id?: string | null;
-        };
+          coins_awarded?: number | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+          video_id?: string | null
+        }
         Update: {
-          coins_awarded: number;
-          created_at?: string;
-          id?: string;
-          user_id?: string | null;
-          video_id?: string | null;
-        };
+          coins_awarded?: number | null
+          created_at?: string
+          id?: string
+          user_id?: string | null
+          video_id?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "coins_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            foreignKeyName: "coins_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "coins_video_id_fkey";
-            columns: ["video_id"];
-            isOneToOne: false;
-            referencedRelation: "videos";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+            foreignKeyName: "coins_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       comments: {
         Row: {
-          content: string;
-          created_at: string;
-          id: string;
-          parent_id: string;
-          user_id: string;
-          username: string;
-          video_id: string;
-        };
+          content: string | null
+          created_at: string
+          id: string
+          parent_id: string | null
+          user_id: string | null
+          username: string | null
+          video_id: string | null
+        }
         Insert: {
-          content?: string | null;
-          created_at?: string;
-          id?: string;
-          parent_id?: string | null;
-          user_id?: string | null;
-          username?: string | null;
-          video_id?: string | null;
-        };
+          content?: string | null
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          user_id?: string | null
+          username?: string | null
+          video_id?: string | null
+        }
         Update: {
-          content?: string | null;
-          created_at?: string;
-          id?: string;
-          parent_id?: string | null;
-          user_id?: string | null;
-          username?: string | null;
-          video_id?: string | null;
-        };
+          content?: string | null
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          user_id?: string | null
+          username?: string | null
+          video_id?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "comments_parent_id_fkey";
-            columns: ["parent_id"];
-            isOneToOne: false;
-            referencedRelation: "comments";
-            referencedColumns: ["id"];
+            foreignKeyName: "comments_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "comments"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "Comments_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            foreignKeyName: "Comments_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "Comments_video_id_fkey";
-            columns: ["video_id"];
-            isOneToOne: false;
-            referencedRelation: "videos";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+            foreignKeyName: "Comments_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       likes: {
         Row: {
-          created_at: string;
-          id: string;
-          total_likes: number | null;
-          user_id: string | null;
-          video_id: string | null;
-        };
+          created_at: string
+          id: string
+          total_likes: number | null
+          user_id: string | null
+          video_id: string | null
+        }
         Insert: {
-          created_at?: string;
-          id?: string;
-          total_likes?: number | null;
-          user_id?: string | null;
-          video_id?: string | null;
-        };
+          created_at?: string
+          id?: string
+          total_likes?: number | null
+          user_id?: string | null
+          video_id?: string | null
+        }
         Update: {
-          created_at?: string;
-          id?: string;
-          total_likes?: number | null;
-          user_id?: string | null;
-          video_id?: string | null;
-        };
+          created_at?: string
+          id?: string
+          total_likes?: number | null
+          user_id?: string | null
+          video_id?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "Likes/Dislikes_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            foreignKeyName: "Likes/Dislikes_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "Likes/Dislikes_video_id_fkey";
-            columns: ["video_id"];
-            isOneToOne: false;
-            referencedRelation: "videos";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
+            foreignKeyName: "Likes/Dislikes_video_id_fkey"
+            columns: ["video_id"]
+            isOneToOne: false
+            referencedRelation: "videos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile: {
         Row: {
-          age: number | null;
-          profile_id: number;
-          profile_image: string | null;
-        };
+          age: number | null
+          profile_id: number
+          profile_image: string | null
+        }
         Insert: {
-          age?: number | null;
-          profile_id: number;
-          profile_image?: string | null;
-        };
+          age?: number | null
+          profile_id: number
+          profile_image?: string | null
+        }
         Update: {
-          age?: number | null;
-          profile_id?: number;
-          profile_image?: string | null;
-        };
-        Relationships: [];
-      };
+          age?: number | null
+          profile_id?: number
+          profile_image?: string | null
+        }
+        Relationships: []
+      }
       users: {
         Row: {
-          avatar_url: string | null;
-          created_at: string | null;
-          email: string | null;
-          id: string;
-          password_hash: string | null;
-          username: string;
-        };
+          avatar_url: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          password_hash: string | null
+          username: string
+        }
         Insert: {
-          avatar_url?: string | null;
-          created_at?: string | null;
-          email?: string | null;
-          id?: string;
-          password_hash?: string | null;
-          username: string;
-        };
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          password_hash?: string | null
+          username: string
+        }
         Update: {
-          avatar_url?: string | null;
-          created_at?: string | null;
-          email?: string | null;
-          id?: string;
-          password_hash?: string | null;
-          username?: string;
-        };
-        Relationships: [];
-      };
+          avatar_url?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          password_hash?: string | null
+          username?: string
+        }
+        Relationships: []
+      }
       videos: {
         Row: {
-          created_at: string;
-          description: string | null;
-          id: string;
-          like_count: number | null;
-          tagline: string | null;
-          thumbnail_url: string;
-          title: string;
-          total_coins: number | null;
-          user_id: string | null;
-          video_url: string;
-        };
+          contact_email: string | null
+          created_at: string
+          description: string | null
+          id: string
+          like_count: number | null
+          tagline: string | null
+          thumbnail_url: string | null
+          title: string | null
+          total_coins: number | null
+          user_id: string | null
+          video_url: string | null
+        }
         Insert: {
-          created_at: string;
-          description?: string | null;
-          id?: string;
-          like_count?: number | null;
-          tagline?: string | null;
-          thumbnail_url?: string | null;
-          title?: string | null;
-          total_coins?: number | null;
-          user_id?: string | null;
-          video_url?: string | null;
-        };
+          contact_email?: string | null
+          created_at: string
+          description?: string | null
+          id?: string
+          like_count?: number | null
+          tagline?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          total_coins?: number | null
+          user_id?: string | null
+          video_url?: string | null
+        }
         Update: {
-          created_at?: string;
-          description?: string | null;
-          id?: string;
-          like_count?: number | null;
-          tagline?: string | null;
-          thumbnail_url?: string | null;
-          title?: string | null;
-          total_coins?: number | null;
-          user_id?: string | null;
-          video_url?: string | null;
-        };
+          contact_email?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          like_count?: number | null
+          tagline?: string | null
+          thumbnail_url?: string | null
+          title?: string | null
+          total_coins?: number | null
+          user_id?: string | null
+          video_url?: string | null
+        }
         Relationships: [
           {
-            foreignKeyName: "Videos_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
-          }
-        ];
-      };
-    };
+            foreignKeyName: "Videos_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
     Views: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     Functions: {
-      [_ in never]: never;
-    };
+      award_coins: {
+        Args: {
+          video_id: string
+          amount: number
+        }
+        Returns: undefined
+      }
+      update_like_count: {
+        Args: {
+          video_id: string
+        }
+        Returns: {
+          like_count: number
+        }[]
+      }
+    }
     Enums: {
-      [_ in never]: never;
-    };
+      [_ in never]: never
+    }
     CompositeTypes: {
-      [_ in never]: never;
-    };
-  };
-};
+      [_ in never]: never
+    }
+  }
+}
 
-type PublicSchema = Database[Extract<keyof Database, "public">];
+type PublicSchema = Database[Extract<keyof Database, "public">]
 
 export type Tables<
   PublicTableNameOrOptions extends
@@ -256,23 +273,23 @@ export type Tables<
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
         Database[PublicTableNameOrOptions["schema"]]["Views"])
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
       Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
-      Row: infer R;
+      Row: infer R
     }
     ? R
     : never
   : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] &
-      PublicSchema["Views"])
-  ? (PublicSchema["Tables"] &
-      PublicSchema["Views"])[PublicTableNameOrOptions] extends {
-      Row: infer R;
-    }
-    ? R
+        PublicSchema["Views"])
+    ? (PublicSchema["Tables"] &
+        PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
     : never
-  : never;
 
 export type TablesInsert<
   PublicTableNameOrOptions extends
@@ -280,20 +297,20 @@ export type TablesInsert<
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Insert: infer I;
+      Insert: infer I
     }
     ? I
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-      Insert: infer I;
-    }
-    ? I
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
     : never
-  : never;
 
 export type TablesUpdate<
   PublicTableNameOrOptions extends
@@ -301,20 +318,20 @@ export type TablesUpdate<
     | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
-    : never = never
+    : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
   ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
-      Update: infer U;
+      Update: infer U
     }
     ? U
     : never
   : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
-      Update: infer U;
-    }
-    ? U
+    ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
     : never
-  : never;
 
 export type Enums<
   PublicEnumNameOrOptions extends
@@ -322,9 +339,9 @@ export type Enums<
     | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
     ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
-    : never = never
+    : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-  ? PublicSchema["Enums"][PublicEnumNameOrOptions]
-  : never;
+    ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
