@@ -8,7 +8,7 @@ type VideoInsert = Database["public"]["Tables"]["videos"]["Insert"];
 // Videos
 export const insertVideo = async (
   client: TypedSupabaseClient,
-  videoData: VideoInsert
+  videoData: Database['public']['Tables']['videos']['Insert']
 ): Promise<void> => {
   const { error } = await client.from("videos").insert(videoData);
   if (error) throw error;
