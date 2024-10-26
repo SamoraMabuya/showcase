@@ -10,7 +10,7 @@ import { Textarea } from "@/components/TextArea";
 import { Label } from "@/components/Label";
 import { AlertCircle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/Alert";
-import { insertVideo } from "@/queries"; // Assuming you've added this to your queries file
+import { getThumbnailUrl, getVideoUrl, insertVideo } from "@/queries"; // Assuming you've added this to your queries file
 import { Database } from "@/utils/database.types";
 
 type FormData = {
@@ -39,65 +39,59 @@ export default function UploadContent() {
     const video = data.video[0];
     const thumbnail = data.thumbnail[0];
 
-    // Check video duration
-    const videoElement = document.createElement("video");
-    videoElement.preload = "metadata";
-    videoElement.onloadedmetadata = async function () {
-      window.URL.revokeObjectURL(videoElement.src);
-      if (videoElement.duration > 60) {
-        alert("Video must be 60 seconds or less");
-        setUploading(false);
-        return;
+    try {
+      // Handle video URL
+      console.log("Starting video upload...");
+      const videoUrl = await getVideoUrl(supabase, video);
+      console.log("Video uploaded successfully:", videoUrl);
+
+      // Handle thumbnail URL
+      console.log("Starting thumbnail upload...");
+      const thumbnailUrl = await getThumbnailUrl(supabase, thumbnail);
+      console.log("Thumbnail uploaded successfully:", thumbnailUrl);
+
+      // Get current user
+      console.log("Getting current user...");
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+      if (userError) {
+        console.error("Error getting user:", userError);
+        throw userError;
       }
+      console.log("User retrieved successfully");
 
-      try {
-        // Upload video
-        const { data: videoData, error: videoError } = await supabase.storage
-          .from("videos")
-          .upload(`${Date.now()}_${video.name}`, video);
+      // Prepare video data
+      const videoInsertData: VideoInsert = {
+        title: data.title,
+        tagline: data.tagline,
+        description: data.description,
+        video_url: videoUrl,
+        thumbnail_url: thumbnailUrl,
+        user_id: user?.id,
+        created_at: new Date().toISOString(),
+        like_count: 0,
+      };
 
-        if (videoError) throw videoError;
+      // Insert video data
+      console.log("Inserting video data...");
+      await insertVideo(supabase, videoInsertData);
+      console.log("Video data inserted successfully");
 
-        // Upload thumbnail
-        const { data: thumbnailData, error: thumbnailError } =
-          await supabase.storage
-            .from("thumbnails")
-            .upload(`${Date.now()}_${thumbnail.name}`, thumbnail);
-
-        if (thumbnailError) throw thumbnailError;
-
-        // Get current user
-        const {
-          data: { user },
-          error: userError,
-        } = await supabase.auth.getUser();
-        if (userError) throw userError;
-
-        // Prepare video data
-        const videoInsertData: VideoInsert = {
-          title: data.title,
-          tagline: data.tagline,
-          description: data.description,
-          video_url: videoData?.path,
-          thumbnail_url: thumbnailData?.path,
-          user_id: user?.id,
-          created_at: new Date().toISOString(),
-          like_count: 0,
-          total_coins: 0,
-        };
-
-        // Insert video data
-        await insertVideo(supabase, videoInsertData);
-
-        setUploading(false);
-        router.push("/");
-      } catch (error) {
-        console.error("Error in video upload process:", error);
-        alert("An error occurred during the upload process. Please try again.");
-        setUploading(false);
+      setUploading(false);
+      router.push("/");
+    } catch (error) {
+      console.error("Detailed error in upload process:", error);
+      if (error instanceof Error) {
+        alert(`An error occurred during the upload process: ${error.message}`);
+      } else {
+        alert(
+          "An unknown error occurred during the upload process. Please try again."
+        );
       }
-    };
-    videoElement.src = URL.createObjectURL(video);
+      setUploading(false);
+    }
   };
 
   return (
@@ -170,16 +164,6 @@ export default function UploadContent() {
             <span className="text-red-500">{errors.contactEmail.message}</span>
           )}
         </div>
-
-        <Alert>
-          <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Note</AlertTitle>
-          <AlertDescription>
-            Videos will be automatically adjusted to fit the appropriate aspect
-            ratio. For thumbnails, please upload images in 16:9 aspect ratio for
-            best results.
-          </AlertDescription>
-        </Alert>
 
         <Button type="submit" disabled={uploading}>
           {uploading ? "Uploading..." : "Upload"}

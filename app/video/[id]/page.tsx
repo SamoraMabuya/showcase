@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Card } from "@/components/Card";
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "@/components/Button";
 import { shortenText } from "@/lib/text";
@@ -11,7 +10,6 @@ import CoinsAwarded from "@/app/videos/CoinsAwarded";
 import CommentSection from "@/app/videos/CommentSection";
 import Likes from "@/app/videos/Likes";
 import SuggestedVideos from "@/app/videos/SuggestedVideos";
-import { Videos } from "@/lib/types";
 import { Label } from "@radix-ui/react-label";
 import { getVideosById } from "@/queries";
 

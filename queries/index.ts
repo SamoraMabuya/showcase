@@ -21,6 +21,82 @@ type VideoWithUser = VideosType & {
     avatar_url: string;
   };
 };
+
+export const getVideoUrl = async (
+  client: TypedSupabaseClient,
+  videoFile: File
+): Promise<string> => {
+  // Generate a unique filename
+  const fileName = `${Date.now()}_${videoFile.name}`;
+
+  // Upload the file to Supabase storage
+  const { data, error } = await client.storage
+    .from("videos")
+    .upload(fileName, videoFile);
+
+  if (error) {
+    console.error("Error uploading video:", error);
+    throw error;
+  }
+
+  if (!data || !data.path) {
+    throw new Error("Upload successful but file path is missing");
+  }
+
+  // Generate a signed URL that expires in 1 hour (3600 seconds)
+  const { data: signedData, error: signedUrlError } = await client.storage
+    .from("videos")
+    .createSignedUrl(data.path, 3600);
+
+  if (signedUrlError) {
+    console.error("Error generating signed URL:", signedUrlError);
+    throw signedUrlError;
+  }
+
+  if (!signedData || !signedData.signedUrl) {
+    throw new Error("Failed to generate signed URL");
+  }
+
+  return signedData.signedUrl;
+};
+
+export const getThumbnailUrl = async (
+  client: TypedSupabaseClient,
+  thumbnailFile: File
+): Promise<string> => {
+  // Generate a unique filename
+  const fileName = `${Date.now()}_${thumbnailFile.name}`;
+
+  // Upload the file to Supabase storage
+  const { data, error } = await client.storage
+    .from("thumbnails")
+    .upload(fileName, thumbnailFile);
+
+  if (error) {
+    console.error("Error uploading video:", error);
+    throw error;
+  }
+
+  if (!data || !data.path) {
+    throw new Error("Upload successful but file path is missing");
+  }
+
+  // Generate a signed URL that expires in 1 hour (3600 seconds)
+  const { data: signedData, error: signedUrlError } = await client.storage
+    .from("thumbnails")
+    .createSignedUrl(data.path, 3600);
+
+  if (signedUrlError) {
+    console.error("Error generating signed URL:", signedUrlError);
+    throw signedUrlError;
+  }
+
+  if (!signedData || !signedData.signedUrl) {
+    throw new Error("Failed to generate signed URL");
+  }
+
+  return signedData.signedUrl;
+};
 export const getVideosById = async (
   client: TypedSupabaseClient,
   videoId: string
@@ -101,7 +177,7 @@ export const updateLikes = async (
     const { error } = await client
       .from("likes")
       .delete()
-      .eq("id", existingLike.id); 
+      .eq("id", existingLike.id);
     if (error) throw error;
   }
 
