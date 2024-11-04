@@ -6,22 +6,13 @@ import { Tables } from "@/utils/database.types";
 import { createClient } from "@/utils/supabase/client";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Label } from "@radix-ui/react-label";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FormEvent } from "react";
 
-// type ProfileData = {
-//   avatar_url: string | null;
-//   age: number | null;
-//   full_name: string | null;
-//   username: string | null;
-//   email: string | null;
-//   date_joined: string | null;
-//   profile_id: string | null;
-// };
+type UserProfile = Tables<'profile'>;
 
-let userProfile: <'profile'>
 
 const Profile = () => {
-  const [profile, setProfile] = useState<userProfile | null>(null);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const supabase = createClient();
 
@@ -35,7 +26,7 @@ const Profile = () => {
     const { data, error } = await supabase
       .from("profile")
       .select("*")
-      .eq("profile_id", user?.id)
+      .eq("profile_id", profile?.user_id)
       .single();
 
     if (error) {
@@ -45,14 +36,14 @@ const Profile = () => {
     }
   };
 
-  const handleUpdate = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUpdate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!profile) return;
 
     const { error } = await supabase
       .from("profile")
       .update(profile)
-      .eq("user_id", user?.id);
+      .eq("user_id", profile.user_id);
 
     if (error) {
       console.error("Error updating profile:", error);
@@ -64,7 +55,7 @@ const Profile = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setProfile((prev) => (prev ? { ...prev, [name]: value } : null));
-  }; 
+  };
 
   if (!profile) return <div>Loading...</div>;
 

@@ -2,10 +2,8 @@ import { TypedSupabaseClient } from "@/utils/types";
 import { Tables } from "@/utils/database.types";
 import { Comments } from "@/lib/types";
 import { createClient } from "@/utils/supabase/client";
-import { Database } from "@/database.types";
-type VideoInsert = Database["public"]["Tables"]["videos"]["Insert"];
+import { Database } from "@/utils/database.types";
 
-// Videos
 export const insertVideo = async (
   client: TypedSupabaseClient,
   videoData: Database['public']['Tables']['videos']['Insert']
