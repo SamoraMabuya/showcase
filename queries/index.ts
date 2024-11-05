@@ -12,6 +12,9 @@ export const insertVideo = async (
   if (error) throw error;
 };
 export type VideosType = Tables<"videos">;
+type CommentsType = Tables<"comments">;
+
+
 
 type VideoWithUser = VideosType & {
   users: {
@@ -192,7 +195,7 @@ export const updateLikes = async (
 export const getComments = async (
   client: TypedSupabaseClient,
   videoId: string
-): Promise<Comments[]> => {
+): Promise<CommentsType[]> => {
   const { data, error } = await client
     .from("comments")
     .select("*")

@@ -3,15 +3,12 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+import { Database } from "@/utils/database.types";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Textarea } from "@/components/TextArea";
 import { Label } from "@/components/Label";
-import { AlertCircle } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/Alert";
-import { getThumbnailUrl, getVideoUrl, insertVideo } from "@/queries"; // Assuming you've added this to your queries file
-import { Database } from "@/utils/database.types";
+import { uploadVideo } from "./actions";
 
 type FormData = {
   title: string;
@@ -32,88 +29,33 @@ export default function UploadContent() {
   } = useForm<FormData>();
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
-  const supabase = createClient();
 
   const onSubmit = async (data: FormData) => {
     setUploading(true);
-    const video = data.video[0];
-    const thumbnail = data.thumbnail[0];
 
     try {
-      // Handle video URL
-      console.log("Starting video upload...");
-      const videoUrl = await getVideoUrl(supabase, video);
-      console.log("Video uploaded successfully:", videoUrl);
+      // Create FormData to handle file uploads
+      const formData = new FormData();
+      formData.append('video', data.video[0]);
+      formData.append('thumbnail', data.thumbnail[0]);
+      formData.append('title', data.title);
+      formData.append('tagline', data.tagline);
+      formData.append('description', data.description);
+      formData.append('contactEmail', data.contactEmail);
 
-      // Handle thumbnail URL
-      console.log("Starting thumbnail upload...");
-      const thumbnailUrl = await getThumbnailUrl(supabase, thumbnail);
-      console.log("Thumbnail uploaded successfully:", thumbnailUrl);
+      // Call server action
+      const result = await uploadVideo(formData);
 
-      // Get current user
-      console.log("Getting current user...");
-      const {
-        data: { user },
-        error: userError,
-      } = await supabase.auth.getUser();
-      if (userError) {
-        console.error("Error getting user:", userError);
-        throw userError;
+      if (result.error) {
+        throw new Error(result.error);
       }
-      console.log("User retrieved successfully");
 
-      // Prepare video data
-      const videoInsertData: VideoInsert = {
-        title: data.title,
-        tagline: data.tagline,
-        description: data.description,
-        video_url: videoUrl,
-        thumbnail_url: thumbnailUrl,
-        user_id: user?.id,
-        created_at: new Date().toISOString(),
-        like_count: 0,
-      };
-
-      // Insert video data
-      console.log("Inserting video data...");
-      await insertVideo(supabase, videoInsertData);
-      console.log("Video data inserted successfully");
-
-        // Upload thumbnail
-        const { data: thumbnailData, error: thumbnailError } = await supabase.storage
-          .from("thumbnails")
-          .upload(`${Date.now()}_${thumbnail.name}`, thumbnail);
-
-        if (thumbnailError) throw thumbnailError;
-
-        // Get current user
-        const { data: { user }, error: userError } = await supabase.auth.getUser();
-        if (userError) throw userError;
-
-        // Prepare video data
-        const videoInsertData: VideoInsert = {
-          title: data.title,
-          tagline: data.tagline,
-          description: data.description,
-          video_url: videoData?.path,
-          thumbnail_url: thumbnailData?.path,
-          contact_email: data.contactEmail,
-          user_id: user?.id,
-          created_at: new Date().toISOString(),
-          like_count: 0,
-          total_coins: 0,
-        };
-
-        // Insert video data
-        await insertVideo(supabase, videoInsertData);
-
-        setUploading(false);
-        router.push("/");
-      } catch (error) {
-        console.error("Error in video upload process:", error);
-        alert("An error occurred during the upload process. Please try again.");
-        setUploading(false);
-      }
+      router.push("/");
+      router.refresh(); // Refresh the page to show new data
+    } catch (error) {
+      console.error("Error in video upload process:", error);
+      alert("An error occurred during the upload process. Please try again.");
+    } finally {
       setUploading(false);
     }
   };
