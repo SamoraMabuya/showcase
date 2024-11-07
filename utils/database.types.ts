@@ -139,7 +139,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           password_hash: string | null
-          profile_id: string
+          profile_id: string 
           user_id: string | null
           username: string | null
         }

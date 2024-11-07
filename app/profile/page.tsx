@@ -26,7 +26,7 @@ const Profile = () => {
     const { data, error } = await supabase
       .from("profile")
       .select("*")
-      .eq("profile_id", profile?.user_id)
+      .eq("profile_id", profile?.profile_id)
       .single();
 
     if (error) {
