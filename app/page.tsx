@@ -5,6 +5,7 @@ import VideoGrid from "@/components/VideoGrid";
 import { createClient } from "@/utils/supabase/client";
 import { Videos } from "@/lib/types";
 import { useSearchParams, useRouter } from "next/navigation";
+import { getSearchedVideos, SearchVideos } from "@/queries";
 
 const fetchVideos = async () => {
   const supabase = createClient();
@@ -28,9 +29,9 @@ export default function Index() {
     data: videos,
     isLoading,
     error,
-  } = useQuery<Videos[], Error>({
+  } = useQuery<SearchVideos[], Error>({
     queryKey: ["videos"],
-    queryFn: fetchVideos,
+    queryFn: getSearchedVideos,
   });
 
   useEffect(() => {

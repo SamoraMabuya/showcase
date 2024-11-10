@@ -1,3 +1,18 @@
+[?25l
+    Select a project:                                                                                  
+                                                                                                       
+  >  1. awkilxsbjloidoylspmq [name: samorasmsam@gmailcom, org: sfqpmtpzcnyrkywkyclk, region: us-west-1]
+                                                                                                       
+                                                                                                       
+    ↑/k up • ↓/j down • / filter • q quit • ? more                                                     
+                                                                                                       [0D[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[2K[1A[0D[2K [0D[2K[?25h[?1002l[?1003l[?1006lexport type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[]
+
 export type Database = {
   public: {
     Tables: {
@@ -139,7 +154,7 @@ export type Database = {
           email: string | null
           full_name: string | null
           password_hash: string | null
-          profile_id: string 
+          profile_id: string
           user_id: string | null
           username: string | null
         }
@@ -201,9 +216,9 @@ export type Database = {
           description: string | null
           id: string
           like_count: number | null
-          tagline: string | null
+          tagline: string
           thumbnail_url: string | null
-          title: string | null
+          title: string
           total_coins: number | null
           user_id: string | null
           video_url: string | null
@@ -214,9 +229,9 @@ export type Database = {
           description?: string | null
           id?: string
           like_count?: number | null
-          tagline?: string | null
+          tagline: string
           thumbnail_url?: string | null
-          title?: string | null
+          title: string
           total_coins?: number | null
           user_id?: string | null
           video_url?: string | null
@@ -227,9 +242,9 @@ export type Database = {
           description?: string | null
           id?: string
           like_count?: number | null
-          tagline?: string | null
+          tagline?: string
           thumbnail_url?: string | null
-          title?: string | null
+          title?: string
           total_coins?: number | null
           user_id?: string | null
           video_url?: string | null

@@ -1,20 +1,18 @@
 import { TypedSupabaseClient } from "@/utils/types";
 import { Tables } from "@/utils/database.types";
-import { Comments } from "@/lib/types";
+import { Comments, Videos } from "@/lib/types";
 import { createClient } from "@/utils/supabase/client";
 import { Database } from "@/utils/database.types";
 
 export const insertVideo = async (
   client: TypedSupabaseClient,
-  videoData: Database['public']['Tables']['videos']['Insert']
+  videoData: Database["public"]["Tables"]["videos"]["Insert"]
 ): Promise<void> => {
   const { error } = await client.from("videos").insert(videoData);
   if (error) throw error;
 };
 export type VideosType = Tables<"videos">;
 type CommentsType = Tables<"comments">;
-
-
 
 type VideoWithUser = VideosType & {
   users: {
@@ -247,12 +245,10 @@ export const addComment = async (
 };
 // Suggested Videos
 
-type SuggestedVideos = Tables<"videos">;
-
 export const getSuggestedVideos = async (
   client: TypedSupabaseClient,
   currentVideoId: string
-): Promise<SuggestedVideos[]> => {
+): Promise<VideosType[]> => {
   const { data, error } = await client
     .from("videos")
     .select("*")
@@ -260,4 +256,18 @@ export const getSuggestedVideos = async (
 
   if (error) throw error;
   return data || [];
+};
+
+// type searchVideos = Tables<'videos'>['Row'];
+export type SearchVideos = Tables<"videos">;
+
+export const getSearchedVideos = async (): Promise<SearchVideos[]> => {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("videos")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return data;
 };
