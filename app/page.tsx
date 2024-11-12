@@ -7,19 +7,8 @@ import { Videos } from "@/lib/types";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getSearchedVideos, SearchVideos } from "@/queries";
 
-const fetchVideos = async () => {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("videos")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) throw error;
-  return data || [];
-};
-
 export default function Index() {
-  const [filteredVideos, setFilteredVideos] = useState<Videos[]>([]);
+  const [filteredVideos, setFilteredVideos] = useState<SearchVideos[]>([]);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q");

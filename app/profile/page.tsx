@@ -6,65 +6,97 @@ import { Tables } from "@/utils/database.types";
 import { createClient } from "@/utils/supabase/client";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Label } from "@radix-ui/react-label";
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
-type UserProfile = Tables<'profile'>;
+const formSchema = z.object({
+  username: z.string().min(2, {
+    message: "Username must be at least 2 characters.",
+  }),
+});
 
+type UserProfile = Tables<"profile">;
 
 const Profile = () => {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const supabase = createClient();
 
+  // Fetch profile once when component mounts
   useEffect(() => {
-    if (profile?.profile_id) {
-      fetchProfile();
-    }
-  }, [profile?.profile_id]);
+    fetchProfile();
+  }, []); // Empty dependency array
 
   const fetchProfile = async () => {
-    const { data, error } = await supabase
-      .from("profile")
-      .select("*")
-      .eq("profile_id", profile?.profile_id)
-      .single();
+    try {
+      setIsLoading(true);
+      // First get the current user
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
 
-    if (error) {
-      console.error("Error fetching profile:", error);
-    } else {
+      if (userError) throw userError;
+      if (!user) throw new Error("No user found");
+
+      // Then get their profile
+      const { data, error } = await supabase
+        .from("profile")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (error) throw error;
       setProfile(data);
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const handleUpdate = async (e: FormEvent<HTMLFormElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (!profile) return;
 
-    const { error } = await supabase
-      .from("profile")
-      .update(profile)
-      .eq("user_id", profile.user_id);
+    try {
+      const {
+        data: { user },
+        error: userError,
+      } = await supabase.auth.getUser();
+      if (userError) throw userError;
+      if (!user) throw new Error("No user found");
 
-    if (error) {
-      console.error("Error updating profile:", error);
-    } else {
+      const { error } = await supabase
+        .from("profile")
+        .update(profile)
+        .eq("user_id", user.id);
+
+      if (error) throw error;
+
       setIsEditing(false);
+      // Optionally refetch to ensure we have the latest data
+      await fetchProfile();
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setProfile((prev) => (prev ? { ...prev, [name]: value } : null));
-  };
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  if (!profile) return <div>Loading...</div>;
-
+  if (!profile) {
+    return <div>No profile found</div>;
+  }
   const avatarFallBack = profile.username?.slice(0, 2).toUpperCase();
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">User Profile</h1>
-      <form onSubmit={handleUpdate}>
+      <form onSubmit={handleChange}>
         <div className="mb-4">
           <Avatar>
             <AvatarImage

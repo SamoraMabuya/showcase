@@ -19,8 +19,6 @@ type FormData = {
   contactEmail: string;
 };
 
-type VideoInsert = Database["public"]["Tables"]["videos"]["Insert"];
-
 export default function UploadContent() {
   const {
     register,
@@ -36,12 +34,12 @@ export default function UploadContent() {
     try {
       // Create FormData to handle file uploads
       const formData = new FormData();
-      formData.append('video', data.video[0]);
-      formData.append('thumbnail', data.thumbnail[0]);
-      formData.append('title', data.title);
-      formData.append('tagline', data.tagline);
-      formData.append('description', data.description);
-      formData.append('contactEmail', data.contactEmail);
+      formData.append("video", data.video[0]);
+      formData.append("thumbnail", data.thumbnail[0]);
+      formData.append("title", data.title);
+      formData.append("tagline", data.tagline);
+      formData.append("description", data.description);
+      formData.append("contactEmail", data.contactEmail);
 
       // Call server action
       const result = await uploadVideo(formData);
