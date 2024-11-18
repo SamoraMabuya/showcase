@@ -1,6 +1,5 @@
 import { TypedSupabaseClient } from "@/utils/types";
 import { Tables } from "@/utils/database.types";
-import { Comments, Videos } from "@/lib/types";
 import { createClient } from "@/utils/supabase/client";
 import { Database } from "@/utils/database.types";
 
@@ -20,7 +19,27 @@ type VideoWithUser = VideosType & {
     avatar_url: string;
   };
 };
+export const getVideoById = async (
+  supabase: TypedSupabaseClient,
+  videoId: string
+) => {
+  const { data, error } = await supabase
+    .from("videos")
+    .select(
+      `
+      *,
+      users (
+        username,
+        avatar_url
+      )
+    `
+    )
+    .eq("id", videoId)
+    .single();
 
+  if (error) throw error;
+  return data;
+};
 export const getVideoUrl = async (
   client: TypedSupabaseClient,
   videoFile: File

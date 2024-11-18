@@ -2,7 +2,7 @@ import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import SideDrawer from "@/components/Drawer";
 import Header from "@/components/Header";
-import { ReactQueryClientProvider } from "@/components/ReactQueryClientProvider";
+import { QueryProviders } from "@/lib/QueryProviders";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -20,16 +20,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ReactQueryClientProvider>
-      <html lang="en" className={GeistSans.className}>
-        <body className="bg-background text-foreground">
+    <html lang="en" className={GeistSans.className}>
+      <body className="bg-background text-foreground">
+        <QueryProviders>
           <Header />
           <SideDrawer />
           <main className="min-h-screen flex flex-col items-center">
             {children}
           </main>
-        </body>
-      </html>
-    </ReactQueryClientProvider>
+        </QueryProviders>
+      </body>
+    </html>
   );
 }
