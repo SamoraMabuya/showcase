@@ -7,13 +7,12 @@ import Coins from "./Coins";
 import Likes from "@/app/videos/Likes";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { VideosType } from "@/queries";
+import { Tables } from "@/utils/database.types";
 dayjs.extend(relativeTime);
 
-interface VideoGridProps {
-  videos: VideosType[];
-}
+type VideoGridProps = Tables<"videos">;
 
-const VideoGrid = ({ videos }: VideoGridProps) => {
+const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
   const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
   const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
 
