@@ -3,6 +3,7 @@ import "./globals.css";
 import SideDrawer from "@/components/Drawer";
 import Header from "@/components/Header";
 import { QueryProviders } from "@/lib/QueryProviders";
+import Hydration from "@/lib/Hydration";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -23,11 +24,13 @@ export default function RootLayout({
     <html lang="en" className={GeistSans.className}>
       <body className="bg-background text-foreground">
         <QueryProviders>
-          <Header />
-          <SideDrawer />
-          <main className="min-h-screen flex flex-col items-center">
-            {children}
-          </main>
+          <Hydration>
+            <Header />
+            <SideDrawer />
+            <main className="min-h-screen flex flex-col items-center">
+              {children}
+            </main>
+          </Hydration>
         </QueryProviders>
       </body>
     </html>
