@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/Button";
 import { shortenText } from "@/lib/text";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
