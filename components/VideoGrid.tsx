@@ -6,9 +6,11 @@ import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import Coins from "./Coins";
 import Likes from "@/app/videos/Likes";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { VideosType } from "@/queries";
 import { Tables } from "@/utils/database.types";
 dayjs.extend(relativeTime);
+import { VideoGridSkeleton } from "./VideoGridSkeleton";
+import Image from "next/image";
+import { Suspense } from "react";
 
 type VideoGridProps = Tables<"videos">;
 
@@ -34,6 +36,7 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
       videoElement.currentTime = 0;
     }
   };
+
   return (
     <div className="mt-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -48,9 +51,13 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
             <div className="relative">
               <AspectRatio ratio={16 / 9}>
                 <div className="w-full h-full">
-                  <img
-                    src={video.thumbnail_url}
+                  <Image
+                    src={video.thumbnail_url || ""}
                     alt={video.title}
+                    fill={true}
+                    quality={75}
+                    priority={false}
+                    placeholder="empty"
                     className={`absolute inset-0 w-full h-full object-cover rounded-md ${
                       hoveredVideo === video.id ? "opacity-0" : "opacity-100"
                     }`}
@@ -60,7 +67,7 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
                     className={`absolute inset-0 w-full h-full object-cover rounded-md ${
                       hoveredVideo === video.id ? "opacity-100" : "opacity-0"
                     }`}
-                    src={video.video_url}
+                    src={video.video_url || ""}
                     muted
                     playsInline
                     loop
@@ -92,4 +99,17 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
     </div>
   );
 };
-export default VideoGrid;
+
+const VideoGridLayout = ({
+  videos,
+  skeletonCount = 8,
+}: {
+  videos: VideoGridProps[];
+  skeletonCount?: number;
+}) => (
+  <Suspense fallback={<VideoGridSkeleton count={skeletonCount} />}>
+    <VideoGrid videos={videos} />
+  </Suspense>
+);
+
+export default VideoGridLayout;
