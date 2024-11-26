@@ -2,12 +2,12 @@
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
 import { Skeleton } from "./Skeleton";
 
-export function VideoGridSkeleton() {
+export function VideoGridSkeleton({ count = 1 }: { count?: number }) {
   return (
     <div className="mt-10">
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {[...Array(8)].map((_, i) => (
-          <div key={i} className="flex flex-col">
+        {[...Array(count)].map((_, index) => (
+          <div key={index} className="flex flex-col">
             <div className="relative">
               <AspectRatio ratio={16 / 9}>
                 <Skeleton className="absolute inset-0 w-full h-full rounded-md" />
