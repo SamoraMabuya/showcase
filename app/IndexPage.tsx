@@ -1,71 +1,39 @@
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import VideoGrid from "@/components/VideoGrid";
+import VideoGridLayout from "@/components/VideoGrid";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getSearchedVideos, SearchVideos } from "@/queries";
+import { VideoGridSkeleton } from "@/components/VideoGridSkeleton";
 
 export default function Index() {
-  const [filteredVideos, setFilteredVideos] = useState<SearchVideos[]>([]);
   const [verificationSuccess, setVerificationSuccess] = useState(false);
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q");
-  const router = useRouter();
 
-  const {
-    data: videos,
-    isLoading,
-    error,
-  } = useQuery<SearchVideos[], Error>({
+  const { data: videos } = useQuery<SearchVideos[], Error>({
     queryKey: ["videos"],
     queryFn: getSearchedVideos,
+    // Add these options to help with loading states
+    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    refetchOnMount: true,
+    refetchOnWindowFocus: false,
   });
 
-  useEffect(() => {
-    // Check if the user just verified their email
-    const success = searchParams.get("verified");
-    if (success === "true") {
-      setVerificationSuccess(true);
+  const filteredVideos = useMemo(() => {
+    if (!videos) return [];
+    if (!searchQuery) return videos;
 
-      // Create a new URLSearchParams object without the 'verified' parameter
-      const newSearchParams = new URLSearchParams(searchParams.toString());
-      newSearchParams.delete("verified");
+    const lowerCaseQuery = searchQuery.toLowerCase();
+    return videos.filter(
+      (video) =>
+        video.title.toLowerCase().includes(lowerCaseQuery) ||
+        video.tagline.toLowerCase().includes(lowerCaseQuery) ||
+        video.description?.toLowerCase().includes(lowerCaseQuery)
+    );
+  }, [videos, searchQuery]);
 
-      // Construct the new URL
-      const newPathname = `${window.location.pathname}${
-        newSearchParams.toString() ? `?${newSearchParams.toString()}` : ""
-      }`;
-
-      // Replace the current URL without the 'verified' parameter
-      router.replace(newPathname, { scroll: false });
-
-      // Hide the success message after 5 seconds
-      setTimeout(() => setVerificationSuccess(false), 5000);
-    }
-  }, [searchParams, router]);
-
-  useEffect(() => {
-    if (videos && searchQuery) {
-      const lowerCaseQuery = searchQuery.toLowerCase();
-      const filtered = videos.filter(
-        (video) =>
-          video.title.toLowerCase().includes(lowerCaseQuery) ||
-          video.tagline.toLowerCase().includes(lowerCaseQuery) ||
-          video.description?.toLowerCase().includes(lowerCaseQuery)
-      );
-      setFilteredVideos(filtered);
-    } else {
-      setFilteredVideos(videos || []);
-    }
-  }, [searchQuery, videos]);
-
-  if (isLoading) {
-    return <p>Loading videos...</p>;
-  }
-
-  if (error) {
-    return <p>Error loading videos. Please try again later.</p>;
-  }
+  const skeletonCount = filteredVideos.length || 8;
 
   return (
     <div className="container mx-auto px-4">
@@ -80,11 +48,9 @@ export default function Index() {
           </span>
         </div>
       )}
-      {!filteredVideos.length ? (
-        <p>No videos available</p>
-      ) : (
-        <VideoGrid videos={filteredVideos} />
-      )}
+      <Suspense fallback={<VideoGridSkeleton count={skeletonCount} />}>
+        <VideoGridLayout videos={filteredVideos} />
+      </Suspense>
     </div>
   );
 }
