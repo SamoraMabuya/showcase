@@ -1,9 +1,9 @@
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
-import SideDrawer from "@/components/Drawer";
 import Header from "@/components/Header";
 import { QueryProviders } from "@/lib/QueryProviders";
 import Hydration from "@/lib/Hydration";
+import SideDrawer from "@/components/Drawer/SideDrawer";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
