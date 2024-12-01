@@ -56,7 +56,8 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
                     alt={video.title}
                     fill={true}
                     quality={75}
-                    priority={false}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority
                     placeholder="empty"
                     className={`absolute inset-0 w-full h-full object-cover rounded-md ${
                       hoveredVideo === video.id ? "opacity-0" : "opacity-100"
