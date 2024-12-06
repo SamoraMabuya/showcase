@@ -1,4 +1,4 @@
-import { HomeIcon, UserIcon, UploadIcon } from "@/lib/Icon";
+import { HomeIcon, UserIcon, UploadIcon, HistoryIcon } from "@/lib/Icon";
 
 export const RouteItems = [
   {
@@ -18,5 +18,11 @@ export const RouteItems = [
     text: "Upload",
     href: "/Upload",
     icon: UploadIcon,
+  },
+  {
+    key: "history",
+    text: "History",
+    href: "/History",
+    icon: HistoryIcon,
   },
 ];
