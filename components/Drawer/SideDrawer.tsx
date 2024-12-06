@@ -39,7 +39,7 @@ const SideDrawer = () => (
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader></DrawerHeader>
-        <div className="p-4 space-y-4 ">
+        <div className="p-4 space-y-8">
           {RouteItems.map((elements) => (
             <Button
               asChild
