@@ -10,9 +10,13 @@ import {
   DrawerHeader,
   DrawerFooter,
   DrawerClose,
+  DrawerTitle,
 } from "./StandardDrawer";
 import { RouteItems } from "@/utils/config";
 import { Button } from "../Button";
+import { Label } from "../Label";
+import { Switch } from "../Switch";
+import { useTheme } from "next-themes";
 
 const DrawerMenuIcon = () => (
   <svg
@@ -31,6 +35,23 @@ const DrawerMenuIcon = () => (
   </svg>
 );
 
+const ThemeToggle = () => {
+  const { setTheme, theme } = useTheme();
+
+  const selectedTheme = (newTheme: boolean) =>
+    setTheme(newTheme ? "dark" : "light");
+
+  return (
+    <div className="flex flex-col items-center space-y-2">
+      <Label htmlFor="airplane-mode">Theme</Label>
+      <Switch
+        checked={theme === "dark"}
+        onCheckedChange={selectedTheme}
+        aria-readonly
+      />
+    </div>
+  );
+};
 const SideDrawer = () => (
   <>
     <Drawer>
@@ -38,7 +59,9 @@ const SideDrawer = () => (
         <DrawerMenuIcon />
       </DrawerTrigger>
       <DrawerContent>
-        <DrawerHeader></DrawerHeader>
+        <DrawerHeader className="mb-4">
+          <DrawerTitle>Viable Product</DrawerTitle>
+        </DrawerHeader>
         <div className="p-4 space-y-8">
           {RouteItems.map((elements) => (
             <Button
@@ -53,6 +76,7 @@ const SideDrawer = () => (
               </Link>
             </Button>
           ))}
+          <ThemeToggle />
         </div>
         <DrawerFooter>
           <DrawerClose />

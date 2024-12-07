@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import { QueryProviders } from "@/lib/QueryProviders";
 import Hydration from "@/lib/Hydration";
 import SideDrawer from "@/components/Drawer/SideDrawer";
-
+import { ThemeProvider } from "@/lib/ThemeProvider";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -25,11 +25,18 @@ export default function RootLayout({
       <body className="bg-background text-foreground">
         <QueryProviders>
           <Hydration>
-            <Header />
-            <SideDrawer />
-            <main className="min-h-screen flex flex-col items-center">
-              {children}
-            </main>
+            <ThemeProvider
+              attribute={"class"}
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <Header />
+              <SideDrawer />
+              <main className="min-h-screen flex flex-col items-center">
+                {children}
+              </main>
+            </ThemeProvider>
           </Hydration>
         </QueryProviders>
       </body>
