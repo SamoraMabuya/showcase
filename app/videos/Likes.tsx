@@ -19,27 +19,30 @@ interface LikesProps {
 }
 
 export default function Likes({ videoId }: LikesProps) {
-  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const client = createClient();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const { data: likes, isLoading: likesLoading } = useQuery({
+  const { data: likes = 0, isLoading: likesLoading } = useQuery({
     queryKey: ["likes", videoId],
     queryFn: () => getLikesCount(client, videoId),
+    enabled: !!videoId,
+    // Add these options to reduce refetching
+    staleTime: 30000, // Data remains fresh for 30 seconds
+    refetchInterval: false, // Disable automatic refetching
+    refetchOnWindowFocus: false, // Disable refetch on window focus
   });
 
-  const { data: userLiked, isLoading: userLikeLoading } = useQuery({
+  const { data: userLiked = false, isLoading: userLikeLoading } = useQuery({
     queryKey: ["userLike", videoId, user?.id],
     queryFn: () => getUserLikeStatus(client, videoId, user?.id),
-    enabled: !!user,
+    enabled: !!user && !!videoId,
+    // Add same options here
+    staleTime: 30000,
+    refetchInterval: false,
+    refetchOnWindowFocus: false,
   });
-
   const mutation = useMutation({
     mutationFn: () => updateLikes(client, videoId, user?.id, !userLiked),
     onSuccess: () => {
@@ -49,9 +52,7 @@ export default function Likes({ videoId }: LikesProps) {
       });
     },
   });
-
   const handleLike = () => {
-    if (!mounted) return;
     if (!user) {
       const currentPath = window.location.pathname;
       router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
@@ -60,7 +61,7 @@ export default function Likes({ videoId }: LikesProps) {
     mutation.mutate();
   };
 
-  if (!mounted || likesLoading || userLikeLoading) {
+  if (likesLoading || userLikeLoading) {
     return <p>Loading likes...</p>;
   }
 

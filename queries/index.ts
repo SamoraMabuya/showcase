@@ -2,6 +2,7 @@ import { TypedSupabaseClient } from "@/utils/types";
 import { Tables } from "@/utils/database.types";
 import { createClient } from "@/utils/supabase/client";
 import { Database } from "@/utils/database.types";
+import { SupabaseClient } from "@supabase/supabase-js";
 
 export const insertVideo = async (
   client: TypedSupabaseClient,
@@ -142,21 +143,22 @@ export const getLikesCount = async (
   client: TypedSupabaseClient,
   videoId: string
 ) => {
-  const { data, error } = await client
-    .from("videos")
-    .select("like_count")
-    .eq("id", videoId)
-    .single();
+  const { count, error } = await client
+    .from("likes")
+    .select("*", { count: "exact" })
+    .eq("video_id", videoId);
 
   if (error) throw error;
-  return data?.like_count || 0;
+  return count || 0;
 };
+
 export const getUserLikeStatus = async (
   client: TypedSupabaseClient,
   videoId: string,
-  userId: string | undefined
+  userId?: string
 ) => {
   if (!userId) return false;
+
   const { data, error } = await client
     .from("likes")
     .select("id")
@@ -164,9 +166,10 @@ export const getUserLikeStatus = async (
     .eq("user_id", userId)
     .single();
 
-  if (error && error.code !== "PGRST116") throw error; // PGRST116 is the error code for no rows returned
+  if (error && error.code !== "PGRST116") throw error;
   return !!data;
 };
+
 export const updateLikes = async (
   client: ReturnType<typeof createClient>,
   videoId: string,
@@ -280,13 +283,14 @@ export const getSuggestedVideos = async (
 // type searchVideos = Tables<'videos'>['Row'];
 export type SearchVideos = Tables<"videos">;
 
+// Move this outside of the function to ensure singleton
+const supabaseClient = createClient();
+
 export const getSearchedVideos = async (): Promise<SearchVideos[]> => {
-  const supabase = createClient();
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from("videos")
     .select("*")
     .order("created_at", { ascending: false });
-
   if (error) throw error;
-  return data;
+  return data || [];
 };

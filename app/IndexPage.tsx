@@ -2,7 +2,7 @@
 import { Suspense, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import VideoGridLayout from "@/components/VideoGrid";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { getSearchedVideos, SearchVideos } from "@/queries";
 import { VideoGridSkeleton } from "@/components/VideoGridSkeleton";
 
@@ -14,9 +14,9 @@ export default function Index() {
   const { data: videos } = useQuery<SearchVideos[], Error>({
     queryKey: ["videos"],
     queryFn: getSearchedVideos,
-    // Add these options to help with loading states
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
-    refetchOnMount: true,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    enabled: false, // Disable fetching if hydrated data is already present
+    refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
 

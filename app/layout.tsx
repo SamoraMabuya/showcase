@@ -25,12 +25,7 @@ export default function RootLayout({
       <body className="bg-background text-foreground">
         <QueryProviders>
           <Hydration>
-            <ThemeProvider
-              attribute={"class"}
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
+            <ThemeProvider>
               <Header />
               <SideDrawer />
               <main className="min-h-screen flex flex-col items-center">

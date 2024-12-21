@@ -11,29 +11,49 @@ dayjs.extend(relativeTime);
 import { VideoGridSkeleton } from "./VideoGridSkeleton";
 import Image from "next/image";
 import { Suspense } from "react";
+import { error } from "console";
 
 type VideoGridProps = Tables<"videos">;
 
 const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
-  const [hoveredVideo, setHoveredVideo] = useState<string | null>(null);
-  const videoRefs = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+  const videoReference = useRef<{ [key: string]: HTMLVideoElement | null }>({});
+  const [hoveredVideo, sethoveredVideo] = useState<string | null>(null);
 
   const handleMouseEnter = (videoId: string) => {
-    setHoveredVideo(videoId);
-    const videoElement = videoRefs.current[videoId];
-    if (videoElement) {
-      videoElement
+    const currentVideo = videoReference.current[videoId];
+    if (currentVideo) {
+      if (!currentVideo.paused) {
+        return;
+      }
+      currentVideo.muted = true; // Ensure the video is muted
+      currentVideo
         .play()
-        .catch((error) => console.error("Error playing video:", error));
+        .then(() => {
+          sethoveredVideo(videoId);
+        })
+        .catch((error) => {
+          if (error.name !== "AbortError") {
+            console.error(
+              "Encountered error while attempting to play hovered video",
+              error
+            );
+          }
+        });
     }
   };
 
   const handleMouseLeave = (videoId: string) => {
-    setHoveredVideo(null);
-    const videoElement = videoRefs.current[videoId];
-    if (videoElement) {
-      videoElement.pause();
-      videoElement.currentTime = 0;
+    const currentVideo = videoReference.current[videoId];
+    currentVideo?.muted;
+    if (currentVideo) {
+      currentVideo.pause();
+      sethoveredVideo(null);
+    }
+  };
+
+  const getVideoRef = (videoRef: HTMLVideoElement | null, videoId: string) => {
+    if (videoRef) {
+      videoReference.current[videoId] = videoRef;
     }
   };
 
@@ -45,8 +65,6 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
             className="flex flex-col "
             href={`/video/${video.id}`}
             key={video.id}
-            onMouseEnter={() => handleMouseEnter(video.id)}
-            onMouseLeave={() => handleMouseLeave(video.id)}
           >
             <div className="relative">
               <AspectRatio ratio={16 / 9}>
@@ -64,7 +82,9 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
                     }`}
                   />
                   <video
-                    ref={(el) => (videoRefs.current[video.id] = el)}
+                    ref={(videoRef) => getVideoRef(videoRef, video.id)}
+                    onMouseEnter={() => handleMouseEnter(video.id)}
+                    onMouseLeave={() => handleMouseLeave(video.id)}
                     className={`absolute inset-0 w-full h-full object-cover rounded-md ${
                       hoveredVideo === video.id ? "opacity-100" : "opacity-0"
                     }`}
@@ -85,7 +105,7 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
               </dl>
               <aside className="flex justify-between">
                 <span>
-                  <small>{dayjs(video?.created_at).fromNow()}</small>
+                  {/* <small>{dayjs(video?.created_at).fromNow()}</small> */}
                 </span>
 
                 <span>

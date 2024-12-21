@@ -1,10 +1,8 @@
-// app/page.tsx
 import {
   HydrationBoundary,
   QueryClient,
   dehydrate,
 } from "@tanstack/react-query";
-import { createClient } from "@/utils/supabase/server";
 import { getSearchedVideos } from "@/queries";
 import IndexPage from "./IndexPage";
 
@@ -15,6 +13,7 @@ export default async function Page() {
   await queryClient.prefetchQuery({
     queryKey: ["videos"],
     queryFn: getSearchedVideos,
+    // staleTime: 5 * 60 * 1000,
   });
 
   return (
