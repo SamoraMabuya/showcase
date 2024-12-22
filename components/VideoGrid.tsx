@@ -68,7 +68,7 @@ const VideoGrid = ({ videos }: { videos: VideoGridProps[] }) => {
           >
             <div className="relative">
               <AspectRatio ratio={16 / 9}>
-                <div className="w-full h-full">
+                <div className="w-full h-full relative">
                   <Image
                     src={video.thumbnail_url || ""}
                     alt={video.title}
