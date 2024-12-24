@@ -1,6 +1,6 @@
 "use client";
-import { Button } from "@/components/Button";
-import { Label } from "@/components/Label";
+import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
 import { getLikesCount, getUserLikeStatus, updateLikes } from "@/queries";
 import { createClient } from "@/utils/supabase/client";
 import {
@@ -11,7 +11,6 @@ import {
 } from "@radix-ui/react-tooltip";
 import { useQueryClient, useQuery, useMutation } from "@tanstack/react-query";
 import { useAuth } from "../hooks/useAuth";
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 interface LikesProps {

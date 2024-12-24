@@ -1,19 +1,19 @@
-"use client"; // Client-side page
-import { useState, useEffect } from "react";
+"use client";
+import { useState } from "react";
 import CommentSection from "./CommentSection";
 import SuggestedVideos from "./SuggestedVideos";
-import { Card } from "@/components/Card";
 import { createClient } from "@/utils/supabase/client";
-import { Videos } from "../../lib/types"; // Use the renamed type
 import Likes from "./Likes";
 import CoinsAwarded from "./CoinsAwarded";
-import { Label } from "@/components/Label";
-import { Button } from "@/components/Button";
+
 import { shortenText } from "@/lib/text";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/Avatar";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getVideosById } from "@/queries";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { Label } from "@radix-ui/react-label";
+
 export default function VideoPage() {
   const params = useParams();
   const videoId = params.id as string;
@@ -40,12 +40,14 @@ export default function VideoPage() {
   const avatarImage = video.users?.avatar_url || avatarFallBack;
   const videoDescription = video.description ? video.description : "";
 
+  const videoUrl = video.video_url || "";
+
   return (
     <div className="container mx-auto p-4">
       <div className="mb-4">
         <div className="relative mb-4">
           <video controls className="w-full rounded-lg">
-            <source src={video.video_url} type="video/mp4" />
+            <source src={videoUrl} type="video/mp4" />
             Your browser does not support the video tag.
           </video>
         </div>

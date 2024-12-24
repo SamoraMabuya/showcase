@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { Comments } from "../../lib/types";
 import { createClient } from "@/utils/supabase/client";
-import { Button } from "@/components/Button";
-import { Input } from "@/components/Input";
+
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import { Collapsible, CollapsibleContent } from "@/components/Collapsible";
 import { CollapsibleTrigger } from "@radix-ui/react-collapsible";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getComments, addComment } from "@/queries";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Collapsible, CollapsibleContent } from "@/components/ui/Collapsible";
 
 dayjs.extend(relativeTime);
 

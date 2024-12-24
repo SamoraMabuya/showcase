@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Button } from "@/components/Button";
-import { Label } from "@/components/Label";
-import { Input } from "@/components/Input";
+import { Button } from "@/components/ui/Button";
+import { Label } from "@/components/ui/Label";
+import { Input } from "@/components/ui/Input";
 import { createClient } from "@/utils/supabase/client";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ import {
   Tooltip,
   TooltipTrigger,
   TooltipContent,
-} from "@/components/Tooltip";
+} from "@/components/ui/Tooltip";
 
 interface CoinsAwardedProps {
   videoId: string;

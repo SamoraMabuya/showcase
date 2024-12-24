@@ -5,6 +5,8 @@ import { QueryProviders } from "@/lib/QueryProviders";
 import Hydration from "@/lib/Hydration";
 import SideDrawer from "@/components/Drawer/SideDrawer";
 import { ThemeProvider } from "@/lib/ThemeProvider";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/SideBar";
+import { AppSidebar } from "@/components/AppSideBar";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
   : "http://localhost:3000";
@@ -27,10 +29,13 @@ export default function RootLayout({
           <Hydration>
             <ThemeProvider>
               <Header />
-              <SideDrawer />
-              <main className="min-h-screen flex flex-col items-center">
-                {children}
-              </main>
+              <SidebarProvider>
+                <AppSidebar />
+                {/* <SideDrawer /> */}
+                <main className="min-h-screen flex flex-col items-center">
+                  {children}
+                </main>
+              </SidebarProvider>
             </ThemeProvider>
           </Hydration>
         </QueryProviders>

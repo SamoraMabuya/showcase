@@ -1,6 +1,4 @@
 "use client";
-import { Button } from "@/components/Button";
-import { shortenText } from "@/lib/text";
 import { Avatar, AvatarImage, AvatarFallback } from "@radix-ui/react-avatar";
 import { Label } from "@radix-ui/react-label";
 import { QueryClient } from "@tanstack/react-query";
@@ -11,6 +9,8 @@ import CoinsAwarded from "../videos/CoinsAwarded";
 import CommentSection from "../videos/CommentSection";
 import Likes from "../videos/Likes";
 import SuggestedVideos from "../videos/SuggestedVideos";
+import { shortenText } from "@/lib/text";
+import { Button } from "@/components/ui/Button";
 
 export default function Video() {
   const [expandText, setExpandText] = useState(false);

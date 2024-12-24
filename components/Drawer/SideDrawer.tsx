@@ -13,17 +13,20 @@ import {
   DrawerTitle,
 } from "./StandardDrawer";
 import { RouteItems } from "@/utils/config";
-import { Button } from "../Button";
-import { Label } from "../Label";
-import { Switch } from "../Switch";
-import { useTheme } from "next-themes";
 
-const DrawerMenuIcon = () => (
+import { useTheme } from "next-themes";
+import { Button } from "../ui/Button";
+import { Label } from "../ui/Label";
+import { Switch } from "../ui/Switch";
+import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
+import { useState } from "react";
+
+export const DrawerMenuIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     fill="none"
     viewBox="0 0 24 24"
-    strokeWidth="1.5"
+    strokeWidth="2.5"
     stroke="currentColor"
     className="size-6"
   >
@@ -35,20 +38,30 @@ const DrawerMenuIcon = () => (
   </svg>
 );
 
-const ThemeToggle = () => {
+export const ThemeToggle = () => {
   const { setTheme, theme } = useTheme();
 
-  const selectedTheme = (newTheme: boolean) =>
-    setTheme(newTheme ? "dark" : "light");
+  const selectedTheme = (newTheme: string) => setTheme(newTheme);
 
   return (
     <div className="flex flex-col items-center space-y-2">
-      <Label htmlFor="airplane-mode">Theme</Label>
-      <Switch
-        checked={theme === "dark"}
-        onCheckedChange={selectedTheme}
-        aria-readonly
-      />
+      <ToggleGroup
+        type="single"
+        variant="outline"
+        value={theme}
+        defaultValue="system"
+      >
+        {["dark", "light", "system"].map((value) => (
+          <ToggleGroupItem
+            key={value}
+            value={value}
+            onClick={() => setTheme(value)}
+            className="data-[state=on]:bg-accent"
+          >
+            {value.charAt(0).toUpperCase() + value.slice(1)}
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
     </div>
   );
 };

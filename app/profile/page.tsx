@@ -1,12 +1,12 @@
 "use client";
-import { AvatarFallback } from "@/components/Avatar";
-import { Button } from "@/components/Button";
-import { Input } from "@/components/Input";
+import { AvatarFallback } from "@/components/ui/Avatar";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui//Input";
 import { Tables } from "@/utils/database.types";
 import { createClient } from "@/utils/supabase/client";
 import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 import { Label } from "@radix-ui/react-label";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ChangeEvent } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -57,7 +57,7 @@ const Profile = () => {
       setIsLoading(false);
     }
   };
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (!profile) return;
 
@@ -96,7 +96,7 @@ const Profile = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">User Profile</h1>
-      <form onSubmit={handleChange}>
+      <form onSubmit={() => handleChange}>
         <div className="mb-4">
           <Avatar>
             <AvatarImage

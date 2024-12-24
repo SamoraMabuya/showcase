@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { buttonVariants } from "./Button";
 import { useAuth } from "@/app/hooks/useAuth";
 import {
   Popover,
@@ -7,6 +6,7 @@ import {
   PopoverContent,
 } from "@radix-ui/react-popover";
 import { createClient } from "@/utils/supabase/client";
+import { buttonVariants } from "./ui/Button";
 
 export function AuthButton() {
   const { user, isLoading } = useAuth();

@@ -1,6 +1,6 @@
 // components/VideoGridSkeleton.tsx
 import { AspectRatio } from "@radix-ui/react-aspect-ratio";
-import { Skeleton } from "./Skeleton";
+import { Skeleton } from "./ui/Skeleton";
 
 export function VideoGridSkeleton({ count = 1 }: { count?: number }) {
   return (

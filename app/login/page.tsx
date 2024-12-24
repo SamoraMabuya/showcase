@@ -4,7 +4,7 @@ import { useState } from "react";
 import { login } from "./action";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { Button } from "@/components/Button";
+import { Button } from "@/components/ui/Button";
 
 export default function LoginPage() {
   const [message, setMessage] = useState("");

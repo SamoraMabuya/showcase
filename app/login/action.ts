@@ -10,7 +10,7 @@ export async function login(formData: FormData) {
     password: formData.get("password") as string,
   };
 
-  const { error } = await supabase.auth.signInWithPassword(data);
+  const { error } = await (await supabase).auth.signInWithPassword(data);
 
   if (error) {
     return { error: error.message };
@@ -24,7 +24,9 @@ export async function signup(formData: FormData) {
   const password = formData.get("password") as string;
   const username = formData.get("username") as string;
 
-  const { data: authData, error: authError } = await supabase.auth.signUp({
+  const { data: authData, error: authError } = await (
+    await supabase
+  ).auth.signUp({
     email,
     password,
     options: {
@@ -40,7 +42,7 @@ export async function signup(formData: FormData) {
 
   // Ensure a record is created in the users table
   if (authData.user) {
-    const { error: insertError } = await supabase.from("users").insert({
+    const { error: insertError } = await (await supabase).from("users").insert({
       id: authData.user.id,
       email: authData.user.email,
       username: username,
