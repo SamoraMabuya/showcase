@@ -5,6 +5,7 @@ import VideoGridLayout from "@/components/VideoGrid";
 import { useSearchParams } from "next/navigation";
 import { getSearchedVideos, SearchVideos } from "@/queries";
 import { VideoGridSkeleton } from "@/components/VideoGridSkeleton";
+import Header from "@/components/Header";
 
 export default function Index() {
   const [verificationSuccess, setVerificationSuccess] = useState(false);
@@ -36,7 +37,7 @@ export default function Index() {
   const skeletonCount = filteredVideos.length || 8;
 
   return (
-    <div className="container mx-auto px-4">
+    <div className="container mx-auto ">
       {verificationSuccess && (
         <div
           className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4"
@@ -48,6 +49,7 @@ export default function Index() {
           </span>
         </div>
       )}
+      <Header />
       <Suspense fallback={<VideoGridSkeleton count={skeletonCount} />}>
         <VideoGridLayout videos={filteredVideos} />
       </Suspense>
