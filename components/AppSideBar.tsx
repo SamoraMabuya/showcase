@@ -18,15 +18,7 @@ import { ThemeToggle } from "./Drawer/SideDrawer";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/Sheet";
 
 export function AppSidebar() {
-  const {
-    state,
-    open,
-    setOpen,
-    openMobile,
-    setOpenMobile,
-    isMobile,
-    toggleSidebar,
-  } = useSidebar();
+  const { state, openMobile, setOpenMobile, isMobile } = useSidebar();
 
   return (
     <>
@@ -75,7 +67,9 @@ export function AppSidebar() {
         // Desktop sidebar
         <Sidebar variant="floating" collapsible="icon">
           <SidebarTrigger
-            className={`${state === "collapsed" ? "mx-auto" : "ml-auto"} flex`}
+            className={`${
+              state === "collapsed" ? "mx-auto" : "ml-auto relative right-3"
+            } flex`}
           />
           <SidebarHeader className="flex mx-auto mb-8">
             {state === "collapsed" ? "VP" : "Viable Product"}
@@ -99,7 +93,7 @@ export function AppSidebar() {
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter>
-            <ThemeToggle />
+            {state === "expanded" ? <ThemeToggle /> : <></>}
           </SidebarFooter>
         </Sidebar>
       )}
