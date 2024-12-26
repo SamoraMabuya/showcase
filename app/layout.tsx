@@ -23,15 +23,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-background text-foreground">
+      <body className="bg-background text-foreground ">
         <QueryProviders>
           <Hydration>
             <ThemeProvider>
-              <Header />
               <SidebarProvider>
                 <AppSidebar />
-                {/* <SideDrawer /> */}
-                <main className="min-h-screen flex flex-col items-center">
+                <main className="min-h-screen flex flex-col items-center container mx-auto md:mx-0">
                   {children}
                 </main>
               </SidebarProvider>
