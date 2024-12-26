@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-
 import Link from "next/link";
 import {
   Drawer,
@@ -16,10 +15,9 @@ import { RouteItems } from "@/utils/config";
 
 import { useTheme } from "next-themes";
 import { Button } from "../ui/Button";
-import { Label } from "../ui/Label";
-import { Switch } from "../ui/Switch";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
-import { useState } from "react";
+import { useSidebar } from "../ui/SideBar";
+import { SunIcon, MoonIcon, CombinedThemeIcons } from "@/lib/Icon";
 
 export const DrawerMenuIcon = () => (
   <svg
@@ -40,8 +38,13 @@ export const DrawerMenuIcon = () => (
 
 export const ThemeToggle = () => {
   const { setTheme, theme } = useTheme();
+  const { isMobile } = useSidebar();
 
-  const selectedTheme = (newTheme: string) => setTheme(newTheme);
+  const themeOptions = [
+    { value: "dark", icon: MoonIcon },
+    { value: "light", icon: SunIcon },
+    { value: "system", icon: CombinedThemeIcons },
+  ];
 
   return (
     <div className="flex flex-col items-center space-y-2">
@@ -51,7 +54,7 @@ export const ThemeToggle = () => {
         value={theme}
         defaultValue="system"
       >
-        {["dark", "light", "system"].map((value) => (
+        {themeOptions.map(({ value, icon }) => (
           <ToggleGroupItem
             key={value}
             value={value}
