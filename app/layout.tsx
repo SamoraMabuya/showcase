@@ -29,7 +29,7 @@ export default function RootLayout({
             <ThemeProvider>
               <SidebarProvider>
                 <AppSidebar />
-                <main className="min-h-screen flex flex-col items-center container mx-auto md:mx-0">
+                <main className="min-h-screen flex flex-col w-full">
                   {children}
                 </main>
               </SidebarProvider>

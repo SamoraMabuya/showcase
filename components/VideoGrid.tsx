@@ -77,9 +77,8 @@ const VideoGrid = ({ videos }: { videos: VideoWithBlur[] }) => {
                       alt={video.title}
                       fill={true}
                       quality={75}
-                      loading="lazy"
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      priority={false}
+                      priority={true}
                       blurDataURL={video.blurDataUrl || undefined}
                       className={`absolute inset-0 w-full h-full object-cover rounded-md ${
                         hoveredVideo === video.id ? "opacity-0" : "opacity-100"

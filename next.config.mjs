@@ -19,6 +19,7 @@ const config = {
   },
 
   images: {
+    formats: ["image/webp"],
     remotePatterns: [
       {
         protocol: "https",
