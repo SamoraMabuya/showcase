@@ -34,7 +34,7 @@ export default function Header() {
   return (
     <div className="mx-4">
       <div className=" flex flex-row-reverse md:flex-row ml-auto md:justify-between gap-4 mt-2 align-middle">
-        <UserDropDown />
+        {isMobile && <UserDropDown />}
 
         <SearchBar />
         {!isMobile && <AuthButton />}
