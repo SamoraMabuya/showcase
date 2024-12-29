@@ -6,7 +6,7 @@ const config = {
   reactStrictMode: true,
 
   webpack: (config, { isServer }) => {
-    // Fix for sharp/plaiceholder in client-side
+    // Handle Sharp in client-side
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
@@ -31,4 +31,5 @@ const config = {
 };
 
 const nextConfig = withPlaiceholder(config);
+
 export default nextConfig;

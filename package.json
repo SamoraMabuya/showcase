@@ -60,6 +60,5 @@
   "exports": "./index.js",
   "repository": "https://github.com/SamoraMabuya/showcase.git",
   "author": "Samora Mabuya <samora.sm.sam@gmail.com>",
-  "license": "MIT",
-  "type": "module"
+  "license": "MIT"
 }
