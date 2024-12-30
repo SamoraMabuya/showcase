@@ -16,14 +16,17 @@ import {
 import Link from "next/link";
 import { ThemeToggle } from "./Drawer/SideDrawer";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "./ui/Sheet";
+import { Logo, ShortenedLogo } from "./Logo";
 
 export function AppSidebar() {
   const { state, openMobile, setOpenMobile, isMobile } = useSidebar();
 
   return (
     <>
-      {/* Always visible trigger for mobile */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
+      <div className="flex items-center md:hidden fixed top-4 left-4 z-50">
+        <div className="relative w-28 h-10">
+          <ShortenedLogo />
+        </div>
         <SidebarTrigger />
       </div>
 
@@ -32,7 +35,7 @@ export function AppSidebar() {
         <Sheet open={openMobile} onOpenChange={setOpenMobile}>
           <SheetContent side="left" className="w-[300px] sm:w-[400px] p-0">
             <SheetHeader className="p-6 pb-0">
-              <SheetTitle>Viable Product</SheetTitle>
+              <SheetTitle className="font-extrabold">Viable Product</SheetTitle>
             </SheetHeader>
             <div className="flex h-full w-full flex-col p-6 pt-2">
               <SidebarContent>
@@ -65,15 +68,13 @@ export function AppSidebar() {
         </Sheet>
       ) : (
         // Desktop sidebar
-        <Sidebar variant="floating" collapsible="icon">
+        <Sidebar collapsible="icon">
           <SidebarTrigger
             className={`${
               state === "collapsed" ? "mx-auto" : "ml-auto relative right-3"
             } flex`}
           />
-          <SidebarHeader className="flex mx-auto mb-8">
-            {state === "collapsed" ? "VP" : "Viable Product"}
-          </SidebarHeader>
+          <SidebarHeader className="none"></SidebarHeader>
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupContent>

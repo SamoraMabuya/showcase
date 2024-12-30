@@ -18,6 +18,7 @@ import { Button } from "../ui/Button";
 import { ToggleGroup, ToggleGroupItem } from "../ui/toggle-group";
 import { useSidebar } from "../ui/SideBar";
 import { SunIcon, MoonIcon, CombinedThemeIcons } from "@/lib/Icon";
+import { ShortenedLogo } from "../Logo";
 
 export const DrawerMenuIcon = () => (
   <svg
@@ -76,7 +77,8 @@ const SideDrawer = () => (
       </DrawerTrigger>
       <DrawerContent>
         <DrawerHeader className="mb-4">
-          <DrawerTitle>Viable Product</DrawerTitle>
+          <ShortenedLogo />
+          <DrawerTitle className="font-bold">Viable Product</DrawerTitle>
         </DrawerHeader>
         <div className="p-4 space-y-8">
           {RouteItems.map((elements) => (
