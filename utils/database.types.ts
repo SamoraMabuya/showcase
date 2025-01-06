@@ -1,6 +1,27 @@
 export type Database = {
   public: {
     Tables: {
+      categories: {
+        Row: {
+          created_at: string | null;
+          id: string;
+          name: string;
+          slug: string;
+        };
+        Insert: {
+          created_at?: string | null;
+          id?: string;
+          name: string;
+          slug: string;
+        };
+        Update: {
+          created_at?: string | null;
+          id?: string;
+          name?: string;
+          slug?: string;
+        };
+        Relationships: [];
+      };
       coins: {
         Row: {
           coins_awarded: number | null;
@@ -42,31 +63,31 @@ export type Database = {
       };
       comments: {
         Row: {
-          content: string | null;
+          content: string;
           created_at: string;
           id: string;
           parent_id: string | null;
-          user_id: string | null;
-          username: string | null;
-          video_id: string | null;
+          user_id: string;
+          username: string;
+          video_id: string;
         };
         Insert: {
-          content?: string | null;
+          content: string;
           created_at?: string;
           id?: string;
           parent_id?: string | null;
-          user_id?: string | null;
-          username?: string | null;
-          video_id?: string | null;
+          user_id?: string;
+          username: string;
+          video_id?: string;
         };
         Update: {
-          content?: string | null;
+          content?: string;
           created_at?: string;
           id?: string;
           parent_id?: string | null;
-          user_id?: string | null;
-          username?: string | null;
-          video_id?: string | null;
+          user_id?: string;
+          username?: string;
+          video_id?: string;
         };
         Relationships: [
           {
@@ -96,34 +117,31 @@ export type Database = {
         Row: {
           created_at: string;
           id: string;
-          total_likes: number | null;
           user_id: string | null;
-          video_id: string | null;
+          video_id: string;
         };
         Insert: {
           created_at?: string;
           id?: string;
-          total_likes?: number | null;
           user_id?: string | null;
-          video_id?: string | null;
+          video_id: string;
         };
         Update: {
           created_at?: string;
           id?: string;
-          total_likes?: number | null;
           user_id?: string | null;
-          video_id?: string | null;
+          video_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "Likes/Dislikes_user_id_fkey";
+            foreignKeyName: "likes_user_id_fkey";
             columns: ["user_id"];
             isOneToOne: false;
             referencedRelation: "users";
             referencedColumns: ["id"];
           },
           {
-            foreignKeyName: "Likes/Dislikes_video_id_fkey";
+            foreignKeyName: "likes_video_id_fkey";
             columns: ["video_id"];
             isOneToOne: false;
             referencedRelation: "videos";
